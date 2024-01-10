@@ -1,60 +1,52 @@
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
-    private int counter = 0;
+    private int countResumes;
 
     void clear() {
-        for (int i = 0; i < counter; i++) {
-            storage[i] = null;
-        }
-        counter = 0;
+        Arrays.fill(storage, null);
+        countResumes = 0;
     }
 
     void save(Resume r) {
-        storage[counter] = r;
-        counter++;
+        storage[countResumes] = r;
+        countResumes++;
     }
 
     Resume get(String uuid) {
-
-        return Arrays.stream(storage)
-                .filter(Objects::nonNull)
-                .filter(r -> uuid.equals(r.uuid))
-                .findFirst().orElse(null);
+        return Arrays.stream(storage).limit(countResumes).filter(r -> uuid.equals(r.uuid)).findFirst().orElse(null);
     }
 
     void delete(String uuid) {
-
         int deleteIndex = -1;
 
-        for (int i = 0; i < counter; i++) {
+        for (int i = 0; i < countResumes; i++) {
             if (uuid.equals(storage[i].uuid)) {
                 deleteIndex = i;
             }
         }
 
         if (deleteIndex >= 0) {
-            for (int i = deleteIndex + 1; i < counter; i++) {
-                storage[i - 1] = storage[i];
-                storage[i] = null;
-            }
-            counter--;
+            storage[deleteIndex] = storage[countResumes - 1];
+            storage[countResumes] = null;
+            countResumes--;
         }
+
+
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, counter);
+        return Arrays.copyOf(storage, countResumes);
     }
 
     int size() {
-        return counter;
+        return countResumes;
     }
 }
