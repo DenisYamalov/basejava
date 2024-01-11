@@ -8,7 +8,7 @@ public class ArrayStorage {
     private int countResumes;
 
     void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(storage, 0, countResumes, null);
         countResumes = 0;
     }
 
@@ -18,25 +18,20 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        return Arrays.stream(storage).limit(countResumes).filter(r -> uuid.equals(r.uuid)).findFirst().orElse(null);
+        return Arrays.stream(storage)
+                .limit(countResumes)
+                .filter(r -> uuid.equals(r.uuid))
+                .findFirst().orElse(null);
     }
 
     void delete(String uuid) {
-        int deleteIndex = -1;
-
         for (int i = 0; i < countResumes; i++) {
             if (uuid.equals(storage[i].uuid)) {
-                deleteIndex = i;
+                storage[i] = storage[countResumes - 1];
+                storage[countResumes] = null;
+                countResumes--;
             }
         }
-
-        if (deleteIndex >= 0) {
-            storage[deleteIndex] = storage[countResumes - 1];
-            storage[countResumes] = null;
-            countResumes--;
-        }
-
-
     }
 
     /**
