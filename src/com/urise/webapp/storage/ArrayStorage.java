@@ -8,7 +8,8 @@ import java.util.Arrays;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private final Resume[] storage = new Resume[10000];
+    private static final int STORAGE_LIMIT = 10000;
+    private final Resume[] storage = new Resume[STORAGE_LIMIT];
     private int countResumes;
 
     public void clear() {
@@ -17,26 +18,27 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (getIndexIfExist(r.getUuid()) == -1) {
-            if (countResumes != storage.length) {
-                storage[countResumes] = r;
-                countResumes++;
-            } else {
-                System.out.println("Storage fulfilled, resume " + r.getUuid() + " not added");
-            }
+        if (countResumes >= storage.length){
+            System.out.println("Storage fulfilled, resume " + r.getUuid() + " not added");
+        } else if (getIndex(r.getUuid()) != -1) {
+            System.out.println("Resume uuid = " + r.getUuid() + " exists");
+        } else {
+            storage[countResumes] = r;
+            countResumes++;
         }
     }
 
     public Resume get(String uuid) {
-        if (getIndexIfExist(uuid) != -1) {
-            return storage[getIndexIfExist(uuid)];
+        int index = getIndex(uuid);
+        if (index != -1) {
+            return storage[index];
         }
         printNotExist(uuid);
         return null;
     }
 
     public void delete(String uuid) {
-        int index = getIndexIfExist(uuid);
+        int index = getIndex(uuid);
         if (index != -1) {
             storage[index] = storage[countResumes - 1];
             storage[countResumes] = null;
@@ -58,7 +60,7 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        int index = getIndexIfExist(resume.getUuid());
+        int index = getIndex(resume.getUuid());
         if (index != -1) {
             storage[index] = resume;
         } else {
@@ -66,7 +68,7 @@ public class ArrayStorage {
         }
     }
 
-    private int getIndexIfExist(String uuid) {
+    private int getIndex(String uuid) {
         for (int i = 0; i < countResumes; i++) {
             if (uuid.equals(storage[i].getUuid())) {
                 return i;
