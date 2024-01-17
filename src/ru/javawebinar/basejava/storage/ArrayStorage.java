@@ -7,18 +7,17 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
-    private static final int STORAGE_LIMIT = 10000;
-    private final Resume[] storage = new Resume[STORAGE_LIMIT];
-    private int countResumes;
+public class ArrayStorage extends AbstractArrayStorage {
 
+    @Override
     public void clear() {
         Arrays.fill(storage, 0, countResumes, null);
         countResumes = 0;
     }
 
+    @Override
     public void save(Resume r) {
-        if (countResumes >= storage.length){
+        if (countResumes >= storage.length) {
             System.out.println("Storage fulfilled, resume " + r.getUuid() + " not added");
         } else if (getIndex(r.getUuid()) != -1) {
             System.out.println("Resume uuid = " + r.getUuid() + " exists");
@@ -28,15 +27,7 @@ public class ArrayStorage {
         }
     }
 
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index != -1) {
-            return storage[index];
-        }
-        printNotExist(uuid);
-        return null;
-    }
-
+    @Override
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index != -1) {
@@ -51,14 +42,12 @@ public class ArrayStorage {
     /**
      * @return array, contains only Resumes in storage (without null)
      */
+    @Override
     public Resume[] getAll() {
         return Arrays.copyOf(storage, countResumes);
     }
 
-    public int size() {
-        return countResumes;
-    }
-
+    @Override
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index != -1) {
@@ -68,15 +57,12 @@ public class ArrayStorage {
         }
     }
 
-    private int getIndex(String uuid) {
+    protected int getIndex(String uuid) {
         for (int i = 0; i < countResumes; i++) {
             if (uuid.equals(storage[i].getUuid())) {
                 return i;
             }
         }
         return -1;
-    }
-    private void printNotExist(String uuid){
-        System.out.println("Resume " + uuid + " doesn't exist in storage");
     }
 }
