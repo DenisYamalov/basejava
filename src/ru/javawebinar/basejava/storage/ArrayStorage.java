@@ -7,18 +7,6 @@ import ru.javawebinar.basejava.model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
     @Override
-    public void save(Resume r) {
-        if (countResumes >= storage.length) {
-            System.out.println("Storage fulfilled, resume " + r.getUuid() + " not added");
-        } else if (getIndex(r.getUuid()) != -1) {
-            System.out.println("Resume uuid = " + r.getUuid() + " exists");
-        } else {
-            storage[countResumes] = r;
-            countResumes++;
-        }
-    }
-
-    @Override
     public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index != -1) {
@@ -37,5 +25,11 @@ public class ArrayStorage extends AbstractArrayStorage {
             }
         }
         return -1;
+    }
+
+    @Override
+    protected void saveWithoutCheck(int index, Resume r) {
+        storage[countResumes] = r;
+        countResumes++;
     }
 }
