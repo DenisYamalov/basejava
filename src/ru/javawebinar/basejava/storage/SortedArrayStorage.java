@@ -27,4 +27,9 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         countResumes--;
 
     }
+
+    @Override
+    protected void updateWithoutCheck(int index, Resume resume) {
+
+    }
 }
