@@ -63,8 +63,8 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
-        if (index != -1) {
-            updateWithoutCheck(index, resume);
+        if (index >= 0) {
+            storage[index] = resume;
         } else {
             printNotExist(resume.getUuid());
         }
@@ -80,6 +80,5 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract void deleteWithoutCheck(int index);
 
-    protected abstract void updateWithoutCheck(int index, Resume resume);
 }
 

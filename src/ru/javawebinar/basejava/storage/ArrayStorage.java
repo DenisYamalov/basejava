@@ -27,9 +27,4 @@ public class ArrayStorage extends AbstractArrayStorage {
         storage[countResumes] = null;
         countResumes--;
     }
-
-    @Override
-    protected void updateWithoutCheck(int index, Resume resume) {
-        storage[index] = resume;
-    }
 }
