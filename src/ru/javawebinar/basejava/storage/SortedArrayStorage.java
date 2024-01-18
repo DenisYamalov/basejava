@@ -6,11 +6,6 @@ import java.util.Arrays;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
-    public void delete(String uuid) {
-
-    }
-
-    @Override
     protected int getIndex(String uuid) {
         Resume searchKey = new Resume();
         searchKey.setUuid(uuid);
@@ -24,5 +19,12 @@ public class SortedArrayStorage extends AbstractArrayStorage {
         storage[insertIndex] = r;
         System.out.println("Resume added: " + r.getUuid());
         countResumes++;
+    }
+
+    @Override
+    protected void deleteWithoutCheck(int index) {
+        System.arraycopy(storage, index+1, storage, index, countResumes);
+        countResumes--;
+
     }
 }

@@ -37,6 +37,16 @@ public abstract class AbstractArrayStorage implements Storage {
         return null;
     }
 
+    @Override
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index >= 0) {
+            deleteWithoutCheck(index);
+        } else {
+            printNotExist(uuid);
+        }
+    }
+
     /**
      * @return array, contains only Resumes in storage (without null)
      */
@@ -67,4 +77,6 @@ public abstract class AbstractArrayStorage implements Storage {
     }
 
     protected abstract void saveWithoutCheck(int index, Resume r);
+protected abstract void deleteWithoutCheck(int index);
 }
+
