@@ -3,7 +3,6 @@ package ru.javawebinar.basejava.storage;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
@@ -14,19 +13,16 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void saveWithoutCheck(int index, Resume r) {
+    protected void insertResume(int index, Resume r) {
         int insertIndex = Math.abs(index) - 1;
         System.arraycopy(storage, insertIndex + 1, storage, insertIndex + 2, countResumes);
         storage[insertIndex] = r;
         System.out.println("Resume added: " + r.getUuid());
-        countResumes++;
     }
 
     @Override
-    protected void deleteWithoutCheck(int index) {
+    protected void deleteResume(int index) {
         System.arraycopy(storage, index + 1, storage, index, countResumes);
-        countResumes--;
-
     }
 
     @Override

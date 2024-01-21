@@ -16,15 +16,13 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void saveWithoutCheck(int index, Resume r) {
+    protected void insertResume(int index, Resume r) {
         storage[countResumes] = r;
-        countResumes++;
     }
 
     @Override
-    protected void deleteWithoutCheck(int index) {
+    protected void deleteResume(int index) {
         storage[index] = storage[countResumes - 1];
         storage[countResumes] = null;
-        countResumes--;
     }
 }
