@@ -24,10 +24,4 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     protected void deleteResume(int index) {
         System.arraycopy(storage, index + 1, storage, index, countResumes);
     }
-
-    @Override
-    public void update(Resume resume) {
-        super.update(resume);
-        Arrays.sort(storage, 0, countResumes);
-    }
 }
