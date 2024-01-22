@@ -1,5 +1,8 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.exception.ExistStorageException;
+import ru.javawebinar.basejava.exception.NotExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
@@ -19,9 +22,9 @@ public abstract class AbstractArrayStorage implements Storage {
     public final void save(Resume r) {
         int index = getIndex(r.getUuid());
         if (countResumes >= storage.length) {
-            System.out.println("Storage fulfilled, resume " + r.getUuid() + " not added");
+            throw new StorageException("Storage fulfilled, resume " + r.getUuid() + " not added", r.getUuid());
         } else if (index >= 0) {
-            System.out.println("Resume uuid = " + r.getUuid() + " exists");
+            throw new ExistStorageException(r.getUuid());
         } else {
             insertResume(index, r);
             countResumes++;
@@ -31,11 +34,10 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public final Resume get(String uuid) {
         int index = getIndex(uuid);
-        if (index != -1) {
-            return storage[index];
+        if (index < 0) {
+            throw new NotExistStorageException(uuid);
         }
-        printNotExist(uuid);
-        return null;
+        return storage[index];
     }
 
     @Override
@@ -45,7 +47,7 @@ public abstract class AbstractArrayStorage implements Storage {
             deleteResume(index);
             countResumes--;
         } else {
-            printNotExist(uuid);
+            throw new NotExistStorageException(uuid);
         }
     }
 
@@ -68,19 +70,14 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             storage[index] = resume;
         } else {
-            printNotExist(resume.getUuid());
+            throw new NotExistStorageException(resume.getUuid());
         }
     }
 
     protected abstract int getIndex(String uuid);
 
-    protected void printNotExist(String uuid) {
-        System.out.println("Resume " + uuid + " doesn't exist in storage");
-    }
-
     protected abstract void insertResume(int index, Resume r);
 
     protected abstract void deleteResume(int index);
-
 }
 
