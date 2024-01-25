@@ -21,7 +21,7 @@ public abstract class AbstractArrayStorage implements Storage {
     @Override
     public final void save(Resume r) {
         int index = getIndex(r.getUuid());
-        if (countResumes >= storage.length) {
+        if (countResumes == STORAGE_LIMIT) {
             throw new StorageException("Storage fulfilled, resume " + r.getUuid() + " not added", r.getUuid());
         } else if (index >= 0) {
             throw new ExistStorageException(r.getUuid());
