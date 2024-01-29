@@ -14,7 +14,17 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void save(Resume r) {
+    protected void incrementCounter() {
+        //do nothing
+    }
+
+    @Override
+    protected void checkStorageLimit(Resume r) {
+        //do nothing
+    }
+
+    @Override
+    protected void insertResume(int index, Resume r) {
         resumeList.add(r);
     }
 

@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
@@ -18,15 +17,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public final void save(Resume r) {
-        int index = getIndex(r.getUuid());
+    protected final void incrementCounter() {
+        countResumes++;
+    }
+
+    protected void checkStorageLimit(Resume r) {
         if (countResumes == STORAGE_LIMIT) {
             throw new StorageException("Storage fulfilled, resume " + r.getUuid() + " not added", r.getUuid());
-        } else if (index >= 0) {
-            throw new ExistStorageException(r.getUuid());
-        } else {
-            insertResume(index, r);
-            countResumes++;
         }
     }
 
@@ -36,7 +33,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected void decrementCounter() {
+    protected final void decrementCounter() {
         countResumes--;
     }
 
@@ -57,7 +54,5 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected void updateResume(Resume resume, int index) {
         storage[index] = resume;
     }
-
-    protected abstract void insertResume(int index, Resume r);
 }
 

@@ -1,5 +1,6 @@
 package ru.javawebinar.basejava.storage;
 
+import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
@@ -33,6 +34,22 @@ public abstract class AbstractStorage implements Storage {
             throw new NotExistStorageException(resume.getUuid());
         }
     }
+    @Override
+    public final void save(Resume r) {
+        int index = getIndex(r.getUuid());
+        checkStorageLimit(r);
+        if (index >= 0) {
+            throw new ExistStorageException(r.getUuid());
+        } else {
+            insertResume(index, r);
+            incrementCounter();
+        }
+    }
+
+    protected abstract void incrementCounter();
+
+    protected abstract void checkStorageLimit(Resume r);
+
 
     protected abstract void updateResume(Resume resume, int index);
 
@@ -43,4 +60,5 @@ public abstract class AbstractStorage implements Storage {
     protected abstract int getIndex(String uuid);
 
     protected abstract void deleteResume(int index);
+    protected abstract void insertResume(int index, Resume r);
 }
