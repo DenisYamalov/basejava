@@ -1,6 +1,5 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.ArrayList;
@@ -19,25 +18,14 @@ public class ListStorage extends AbstractStorage {
         resumeList.add(r);
     }
 
-    //TODO move same code to AbstractStorage
     @Override
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
+    protected Resume getResume(int index) {
         return resumeList.get(index);
     }
 
-    //TODO move same code to AbstractStorage
     @Override
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            deleteResume(index);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+    protected void decrementCounter() {
+        //do nothing
     }
 
     @Override
@@ -50,22 +38,16 @@ public class ListStorage extends AbstractStorage {
         return resumeList.size();
     }
 
-    @Override
-    public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            resumeList.set(index, resume);
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
-
+    protected void updateResume(Resume resume, int index) {
+        resumeList.set(index, resume);
     }
 
-    //TODO change index searching or provide that equals calculating only by uuid
+    @Override
     protected int getIndex(String uuid) {
         return resumeList.indexOf(new Resume(uuid));
     }
 
+    @Override
     protected void deleteResume(int index) {
         resumeList.remove(index);
     }
