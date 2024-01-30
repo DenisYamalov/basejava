@@ -12,11 +12,17 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractArrayStorageTest {
+    private static final int INITIAL_SIZE = 3;
     private final Storage storage;
-    private static final Resume RESUME1 = new Resume("uuid1");
-    private static final Resume RESUME2 = new Resume("uuid2");
-    private static final Resume RESUME3 = new Resume("uuid3");
-    private static final Resume RESUME4 = new Resume("uuid4");
+    private static final String UUID_1 = "uuid1";
+    private static final String UUID_2 = "uuid2";
+    private static final String UUID_3 = "uuid3";
+    private static final String UUID_4 = "uuid4";
+    private static final String UUID_NOT_EXIST = "dummy";
+    private static final Resume RESUME1 = new Resume(UUID_1);
+    private static final Resume RESUME2 = new Resume(UUID_2);
+    private static final Resume RESUME3 = new Resume(UUID_3);
+    private static final Resume RESUME4 = new Resume(UUID_4);
 
     public AbstractArrayStorageTest(Storage storage) {
         this.storage = storage;
@@ -41,7 +47,7 @@ public abstract class AbstractArrayStorageTest {
     void save() {
         storage.save(RESUME4);
         assertGet(RESUME4);
-        assertSize(4);
+        assertSize(INITIAL_SIZE + 1);
     }
 
     @Test
@@ -73,13 +79,13 @@ public abstract class AbstractArrayStorageTest {
     void delete() {
         storage.delete(RESUME1.getUuid());
         assertFalse(Arrays.asList(storage.getAll()).contains(RESUME1));
-        assertSize(2);
+        assertSize(INITIAL_SIZE - 1);
         assertThrowsNotExist(RESUME1.getUuid());
     }
 
     @Test
     public void deleteNotExist() {
-        assertThrows(NotExistStorageException.class, () -> storage.delete("dummy"));
+        assertThrows(NotExistStorageException.class, () -> storage.delete(UUID_NOT_EXIST));
     }
 
     @Test
@@ -90,7 +96,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     void size() {
-        assertSize(3);
+        assertSize(INITIAL_SIZE);
     }
 
     @Test
@@ -102,12 +108,12 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void updateNotExist() {
-        assertThrows(NotExistStorageException.class, () -> storage.update(new Resume("123")));
+        assertThrows(NotExistStorageException.class, () -> storage.update(new Resume(UUID_NOT_EXIST)));
     }
 
     @Test
     public void getNotExist() {
-        assertThrowsNotExist("dummy");
+        assertThrowsNotExist(UUID_NOT_EXIST);
     }
 
     private void assertThrowsNotExist(String uuid) {
