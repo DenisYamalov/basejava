@@ -63,10 +63,10 @@ public abstract class AbstractStorageTest {
 
     @Test
     void delete() {
-        storage.delete(RESUME1.getUuid());
+        storage.delete(UUID_1);
         assertFalse(Arrays.asList(storage.getAll()).contains(RESUME1));
         assertSize(INITIAL_SIZE - 1);
-        assertThrowsNotExist(RESUME1.getUuid());
+        assertThrowsNotExist(UUID_1);
     }
 
     @Test
@@ -87,7 +87,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     void update() {
-        Resume resume = new Resume(RESUME1.getUuid());
+        Resume resume = new Resume(UUID_1);
         storage.update(resume);
         assertGet(resume);
     }
