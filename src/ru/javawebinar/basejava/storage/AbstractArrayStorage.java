@@ -8,35 +8,58 @@ import ru.javawebinar.basejava.model.Resume;
 import java.util.Arrays;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
-    public static final int STORAGE_LIMIT = 10000;
+    protected static final int STORAGE_LIMIT = 10000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int countResumes;
+
+    @Override
+    public final Resume get(String uuid) {
+        int index = getIndex(uuid);
+        if (index < 0) {
+            throw new NotExistStorageException(uuid);
+        }
+        return storage[index];
+    }
+
+    @Override
+    public final void save(Resume r) {
+        int index = getIndex(r.getUuid());
+        if (countResumes == STORAGE_LIMIT) {
+            throw new StorageException("Storage fulfilled, resume " + r.getUuid() + " not added", r.getUuid());
+        }
+        if (index >= 0) {
+            throw new ExistStorageException(r.getUuid());
+        } else {
+            insertResume(index, r);
+            countResumes++;
+        }
+    }
+
+    @Override
+    public final void update(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        if (index >= 0) {
+            storage[index] = resume;
+        } else {
+            throw new NotExistStorageException(resume.getUuid());
+        }
+    }
+
+    @Override
+    public final void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index >= 0) {
+            deleteResume(index);
+            countResumes--;
+        } else {
+            throw new NotExistStorageException(uuid);
+        }
+    }
 
     @Override
     public void clear() {
         Arrays.fill(storage, 0, countResumes, null);
         countResumes = 0;
-    }
-
-    @Override
-    protected final void incrementCounter() {
-        countResumes++;
-    }
-
-    protected void checkStorageLimit(Resume r) {
-        if (countResumes == STORAGE_LIMIT) {
-            throw new StorageException("Storage fulfilled, resume " + r.getUuid() + " not added", r.getUuid());
-        }
-    }
-
-    @Override
-    protected Resume getResume(int index) {
-        return storage[index];
-    }
-
-    @Override
-    protected final void decrementCounter() {
-        countResumes--;
     }
 
     /**
@@ -52,9 +75,5 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return countResumes;
     }
 
-    @Override
-    protected void updateResume(Resume resume, int index) {
-        storage[index] = resume;
-    }
 }
 
