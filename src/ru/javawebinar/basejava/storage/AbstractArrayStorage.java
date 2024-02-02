@@ -75,5 +75,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return countResumes;
     }
 
+    protected abstract void insertResume(int index, Resume r);
+
+    protected abstract void deleteResume(int index);
 }
 
