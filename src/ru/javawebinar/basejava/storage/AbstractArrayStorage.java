@@ -1,59 +1,33 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.exception.ExistStorageException;
-import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int countResumes;
 
     @Override
-    public final Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        }
-        return storage[index];
+    protected Resume getResume(Integer searchKey) {
+        return storage[searchKey];
     }
 
     @Override
     public final void save(Resume r) {
-        int index = getIndex(r.getUuid());
         if (countResumes == STORAGE_LIMIT) {
             throw new StorageException("Storage fulfilled, resume " + r.getUuid() + " not added", r.getUuid());
         }
-        if (index >= 0) {
-            throw new ExistStorageException(r.getUuid());
-        } else {
-            insertResume(index, r);
-            countResumes++;
-        }
-    }
-
-    @Override
-    public final void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index >= 0) {
-            storage[index] = resume;
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
+        super.save(r);
+        countResumes++;
     }
 
     @Override
     public final void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            deleteResume(index);
-            countResumes--;
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        super.delete(uuid);
+        countResumes--;
     }
 
     @Override
@@ -75,8 +49,14 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return countResumes;
     }
 
-    protected abstract void insertResume(int index, Resume r);
+    @Override
+    protected final boolean isExist(Integer searchKey) {
+        return searchKey >= 0;
+    }
 
-    protected abstract void deleteResume(int index);
+    @Override
+    protected void updateResume(Integer searchKey, Resume r) {
+        storage[searchKey] = r;
+    }
 }
 

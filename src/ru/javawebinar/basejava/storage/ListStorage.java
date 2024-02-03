@@ -1,25 +1,16 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.exception.ExistStorageException;
-import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
     private final List<Resume> resumeList = new ArrayList<>();
 
-    protected boolean isExist(int index) {
-        return index < 0;
-    }
-
-    private void getExistingSearchKey(String uuid) {
-        throw new ExistStorageException(uuid);
-    }
-
-    private void getNotExistingSearchKey(String uuid) {
-        throw new NotExistStorageException(uuid);
+    @Override
+    protected boolean isExist(Integer index) {
+        return index >= 0;
     }
 
     @Override
@@ -28,39 +19,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (isExist(index)) {
-            getNotExistingSearchKey(uuid);
-        }
-        return resumeList.get(index);
+    protected Resume getResume(Integer searchKey) {
+        return resumeList.get(searchKey);
     }
 
     @Override
-    public void save(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (!isExist(index)) {
-            getExistingSearchKey(r.getUuid());
-        }
+    protected void insertResume(Integer searchKey, Resume r) {
         resumeList.add(r);
     }
 
     @Override
-    public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (isExist(index)) {
-            getNotExistingSearchKey(resume.getUuid());
-        }
-        resumeList.set(index, resume);
+    protected void updateResume(Integer searchKey, Resume r) {
+        resumeList.set(searchKey, r);
     }
 
     @Override
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (isExist(index)) {
-            getNotExistingSearchKey(uuid);
-        }
-        resumeList.remove(index);
+    protected void deleteResume(Integer searchKey) {
+        resumeList.remove(searchKey.intValue());
     }
 
     @Override
@@ -74,7 +49,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected int getIndex(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         for (int i = 0; i < resumeList.size(); i++) {
             if (resumeList.get(i).getUuid().equals(uuid)) {
                 return i;

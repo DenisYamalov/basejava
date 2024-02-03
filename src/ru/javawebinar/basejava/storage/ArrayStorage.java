@@ -6,7 +6,7 @@ import ru.javawebinar.basejava.model.Resume;
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
-    protected int getIndex(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         for (int i = 0; i < countResumes; i++) {
             if (uuid.equals(storage[i].getUuid())) {
                 return i;
@@ -16,13 +16,14 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void insertResume(int index, Resume r) {
+    protected void insertResume(Integer searchKey, Resume r) {
         storage[countResumes] = r;
     }
 
     @Override
-    protected void deleteResume(int index) {
-        storage[index] = storage[countResumes - 1];
+    protected void deleteResume(Integer searchKey) {
+        storage[searchKey] = storage[countResumes - 1];
         storage[countResumes] = null;
     }
+
 }
