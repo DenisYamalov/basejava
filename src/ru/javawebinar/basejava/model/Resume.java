@@ -6,10 +6,14 @@ import java.util.UUID;
 /**
  * Initial resume class
  */
-public class Resume {
+public class Resume implements Comparable<Resume> {
     // Unique identifier
     private final String uuid;
-    private final String fullName;
+    private String fullName;
+
+    public Resume() {
+        this(UUID.randomUUID().toString(), null);
+    }
 
     public Resume(String uuid, String fullName) {
         this.uuid = uuid;
@@ -22,6 +26,10 @@ public class Resume {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     @Override
@@ -40,5 +48,10 @@ public class Resume {
     @Override
     public int hashCode() {
         return Objects.hash(uuid, fullName);
+    }
+
+    @Override
+    public int compareTo(Resume o) {
+        return uuid.compareTo(o.getUuid());
     }
 }
