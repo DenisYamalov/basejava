@@ -7,38 +7,22 @@ import ru.javawebinar.basejava.model.Resume;
 public abstract class AbstractStorage<T> implements Storage {
     @Override
     public final Resume get(String uuid) {
-        T searchKey = getSearchKey(uuid);
-        if (!isExist(searchKey)) {
-            getNotExistingSearchKey(uuid);
-        }
-        return getResume(searchKey);
+        return doGet(getExistingSearchKey(uuid));
     }
 
     @Override
     public void save(Resume r) {
-        T searchKey = getSearchKey(r.getUuid());
-        if (isExist(searchKey)) {
-            getExistingSearchKey(r.getUuid());
-        }
-        insertResume(searchKey, r);
+        doSave(getNotExistingSearchKey(r.getUuid()), r);
     }
 
     @Override
     public final void update(Resume resume) {
-        T searchKey = getSearchKey(resume.getUuid());
-        if (!isExist(searchKey)) {
-            getNotExistingSearchKey(resume.getUuid());
-        }
-        updateResume(searchKey, resume);
+        doUpdate(getExistingSearchKey(resume.getUuid()), resume);
     }
 
     @Override
     public void delete(String uuid) {
-        T searchKey = getSearchKey(uuid);
-        if (!isExist(searchKey)) {
-            getNotExistingSearchKey(uuid);
-        }
-        deleteResume(searchKey);
+        doDelete(getExistingSearchKey(uuid));
     }
 
     /**
@@ -47,7 +31,7 @@ public abstract class AbstractStorage<T> implements Storage {
      * @param searchKey checked searchKey
      * @return resume
      */
-    protected abstract Resume getResume(T searchKey);
+    protected abstract Resume doGet(T searchKey);
 
     /**
      * Insert validated resume by validated searchKey
@@ -55,7 +39,7 @@ public abstract class AbstractStorage<T> implements Storage {
      * @param searchKey checked searchKey
      * @param r         resume
      */
-    protected abstract void insertResume(T searchKey, Resume r);
+    protected abstract void doSave(T searchKey, Resume r);
 
     /**
      * Update validated resume by validated searchKey
@@ -63,24 +47,32 @@ public abstract class AbstractStorage<T> implements Storage {
      * @param searchKey checked searchKey
      * @param r         resume
      */
-    protected abstract void updateResume(T searchKey, Resume r);
-
-    protected abstract T getSearchKey(String uuid);
+    protected abstract void doUpdate(T searchKey, Resume r);
 
     /**
      * Delete resume by validated searchKey
      *
      * @param searchKey checked searchKey
      */
-    protected abstract void deleteResume(T searchKey);
+    protected abstract void doDelete(T searchKey);
+
+    protected abstract T getSearchKey(String uuid);
 
     protected abstract boolean isExist(T searchKey);
 
-    private void getExistingSearchKey(String uuid) {
-        throw new ExistStorageException(uuid);
+    private T getExistingSearchKey(String uuid) {
+        T searchKey = getSearchKey(uuid);
+        if (!isExist(searchKey)) {
+            throw new NotExistStorageException(uuid);
+        }
+        return searchKey;
     }
 
-    private void getNotExistingSearchKey(String uuid) {
-        throw new NotExistStorageException(uuid);
+    private T getNotExistingSearchKey(String uuid) {
+        T searchKey = getSearchKey(uuid);
+        if (isExist(searchKey)) {
+            throw new ExistStorageException(uuid);
+        }
+        return searchKey;
     }
 }

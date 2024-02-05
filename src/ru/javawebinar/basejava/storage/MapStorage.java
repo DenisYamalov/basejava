@@ -24,22 +24,22 @@ public class MapStorage extends AbstractStorage<String> {
     }
 
     @Override
-    protected Resume getResume(String searchKey) {
+    protected Resume doGet(String searchKey) {
         return resumeMap.get(searchKey);
     }
 
     @Override
-    protected void insertResume(String searchKey, Resume r) {
+    protected void doSave(String searchKey, Resume r) {
         resumeMap.put(r.getUuid(), r);
     }
 
     @Override
-    protected void updateResume(String searchKey, Resume r) {
+    protected void doUpdate(String searchKey, Resume r) {
         resumeMap.replace(r.getUuid(), r);
     }
 
     @Override
-    protected void deleteResume(String searchKey) {
+    protected void doDelete(String searchKey) {
         resumeMap.remove(searchKey);
     }
 

@@ -12,7 +12,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void insertResume(Integer searchKey, Resume r) {
+    protected void doSave(Integer searchKey, Resume r) {
         int insertIndex = Math.abs(searchKey) - 1;
         System.arraycopy(storage, insertIndex, storage, insertIndex + 1, countResumes - insertIndex);
         storage[insertIndex] = r;
@@ -20,7 +20,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void deleteResume(Integer searchKey) {
+    protected void doDelete(Integer searchKey) {
         int numberMoved = countResumes - searchKey - 1;
         if (numberMoved > 0) {
             System.arraycopy(storage, searchKey + 1, storage, searchKey, numberMoved);

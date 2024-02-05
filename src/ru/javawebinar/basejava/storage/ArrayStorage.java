@@ -16,12 +16,12 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void insertResume(Integer searchKey, Resume r) {
+    protected void doSave(Integer searchKey, Resume r) {
         storage[countResumes] = r;
     }
 
     @Override
-    protected void deleteResume(Integer searchKey) {
+    protected void doDelete(Integer searchKey) {
         storage[searchKey] = storage[countResumes - 1];
         storage[countResumes] = null;
     }
