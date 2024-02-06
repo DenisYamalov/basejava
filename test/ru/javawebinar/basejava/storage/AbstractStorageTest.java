@@ -7,6 +7,7 @@ import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +40,8 @@ public abstract class AbstractStorageTest {
     void clear() {
         storage.clear();
         assertSize(0);
-        assertArrayEquals(new Resume[0], storage.getAll());
+        List<Resume> resumeList = storage.getAllSorted();
+        assertArrayEquals(new Resume[0], resumeList.toArray());
     }
 
     @Test
@@ -64,7 +66,8 @@ public abstract class AbstractStorageTest {
     @Test
     void delete() {
         storage.delete(UUID_1);
-        assertFalse(Arrays.asList(storage.getAll()).contains(RESUME1));
+        List<Resume>resumeList = storage.getAllSorted();
+        assertFalse(resumeList.contains(RESUME1));
         assertSize(INITIAL_SIZE - 1);
         assertThrowsNotExist(UUID_1);
     }
@@ -77,8 +80,8 @@ public abstract class AbstractStorageTest {
     @Test
     void getAll() {
         Resume[] resumes = {RESUME1, RESUME2, RESUME3};
-        Resume[] testingArray = storage.getAll();
-        Arrays.sort(testingArray);
+        Arrays.sort(resumes,Storage.RESUME_COMPARATOR);
+        Resume[] testingArray = storage.getAllSorted().toArray(Resume[]::new);
         assertArrayEquals(resumes, testingArray);
     }
 

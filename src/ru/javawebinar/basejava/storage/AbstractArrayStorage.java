@@ -4,6 +4,8 @@ import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
@@ -36,14 +38,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         countResumes = 0;
     }
 
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, countResumes);
-    }
-
     @Override
     public int size() {
         return countResumes;
@@ -57,6 +51,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     @Override
     protected void doUpdate(Integer searchKey, Resume r) {
         storage[searchKey] = r;
+    }
+
+    @Override
+    protected Stream<Resume> resumeStream() {
+        return Arrays.stream(storage).filter(Objects::nonNull);
     }
 }
 
