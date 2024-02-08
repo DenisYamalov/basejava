@@ -8,9 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MapStorage extends AbstractStorage<String> {
-    private final Map<String, Resume> resumeMap = new HashMap<>();
-
+public class MapStorage extends AbstractMapStorage<String> {
     @Override
     protected String getSearchKey(String uuid) {
         return uuid;
@@ -21,10 +19,6 @@ public class MapStorage extends AbstractStorage<String> {
         return resumeMap.containsKey(uuid);
     }
 
-    @Override
-    public void clear() {
-        resumeMap.clear();
-    }
 
     @Override
     protected Resume doGet(String searchKey) {
@@ -46,13 +40,4 @@ public class MapStorage extends AbstractStorage<String> {
         resumeMap.remove(searchKey);
     }
 
-    @Override
-    protected Stream<Resume> resumeStream() {
-        return resumeMap.values().stream();
-    }
-
-    @Override
-    public int size() {
-        return resumeMap.size();
-    }
 }
