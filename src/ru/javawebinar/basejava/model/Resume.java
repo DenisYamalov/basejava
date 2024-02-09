@@ -20,6 +20,10 @@ public class Resume {
         this.fullName = fullName;
     }
 
+    public Resume(String fullName) {
+        this(UUID.randomUUID().toString(), fullName);
+    }
+
     public String getUuid() {
         return uuid;
     }
