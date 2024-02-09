@@ -5,8 +5,6 @@ import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class AbstractStorage<T> implements Storage {
     @Override
@@ -31,9 +29,12 @@ public abstract class AbstractStorage<T> implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return resumeStream().sorted(RESUME_COMPARATOR).collect(Collectors.toList());
+        List<Resume> resumeList = getAll();
+        resumeList.sort(RESUME_COMPARATOR);
+        return resumeList;
     }
-    protected abstract Stream<Resume> resumeStream();
+
+    protected abstract List<Resume> getAll();
 
     /**
      * Gets resume by validated searchKey

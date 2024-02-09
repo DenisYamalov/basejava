@@ -10,7 +10,7 @@ public class MapResumeStorage extends AbstractMapStorage<Resume> {
 
     @Override
     protected boolean isExist(Resume searchKey) {
-        return resumeMap.containsValue(searchKey);
+        return searchKey != null;
     }
 
     @Override

@@ -4,8 +4,9 @@ import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
@@ -54,8 +55,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    protected Stream<Resume> resumeStream() {
-        return Arrays.stream(storage).filter(Objects::nonNull);
+    protected List<Resume> getAll() {
+        return Arrays.stream(storage).filter(Objects::nonNull).collect(Collectors.toList());
     }
+
 }
 
