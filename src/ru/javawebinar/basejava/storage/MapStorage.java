@@ -2,12 +2,6 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.Resume;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class MapStorage extends AbstractMapStorage<String> {
     @Override
     protected String getSearchKey(String uuid) {
