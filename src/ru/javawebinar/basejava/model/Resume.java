@@ -55,6 +55,13 @@ public class Resume {
             throw new ResumeException("Contact not exist");
         }
     }
+    public void removeContact(ContactType contactType){
+        if (contactsMap.containsKey(contactType)) {
+            contactsMap.remove(contactType);
+        } else {
+            throw new ResumeException("Contact not exist");
+        }
+    }
 
     public void addSection(SectionType sectionType, Section section) {
         if (!sectionMap.containsKey(sectionType)) {
@@ -75,6 +82,13 @@ public class Resume {
     public Section getSection(SectionType sectionType) {
         if (sectionMap.containsKey(sectionType)) {
             return sectionMap.get(sectionType);
+        } else {
+            throw new ResumeException("SectionType " + sectionType + " not exist.");
+        }
+    }
+    public void removeSection(SectionType sectionType){
+        if (sectionMap.containsKey(sectionType)) {
+            sectionMap.remove(sectionType);
         } else {
             throw new ResumeException("SectionType " + sectionType + " not exist.");
         }
