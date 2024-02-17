@@ -55,7 +55,8 @@ public class Resume {
             throw new ResumeException("Contact not exist");
         }
     }
-    public void removeContact(ContactType contactType){
+
+    public void removeContact(ContactType contactType) {
         if (contactsMap.containsKey(contactType)) {
             contactsMap.remove(contactType);
         } else {
@@ -86,7 +87,8 @@ public class Resume {
             throw new ResumeException("SectionType " + sectionType + " not exist.");
         }
     }
-    public void removeSection(SectionType sectionType){
+
+    public void removeSection(SectionType sectionType) {
         if (sectionMap.containsKey(sectionType)) {
             sectionMap.remove(sectionType);
         } else {
@@ -157,60 +159,58 @@ public class Resume {
     }
 
     public class CompanySection extends Section {
-        private final String companyName;
-        private final String website;
-        private final Period period;
+        private final Set<Period> periods = new TreeSet<>();
 
-        public CompanySection(String companyName, String website, Period period) {
-            this.companyName = companyName;
-            this.website = website;
-            this.period = period;
+        public void addPeriod(Period period) {
+            if (!periods.contains(period)) {
+                periods.add(period);
+            } else {
+                throw new ResumeException("Period " + period + " already exist.");
+            }
         }
 
-        public String getCompanyName() {
-            return companyName;
+        public void updatePeriod(Period period) {
+            //TODO find way to search periods by field
+            if (periods.contains(period)) {
+                periods.remove(period);
+                periods.add(period);
+            } else {
+                throw new ResumeException("Period " + period + " already exist.");
+            }
         }
 
-        public String getWebsite() {
-            return website;
+        public void removePeriod(Period period) {
+            if (periods.contains(period)) {
+                periods.remove(period);
+            } else {
+                throw new ResumeException("Period " + period + " not exist.");
+            }
         }
 
-        public Period getPeriod() {
-            return period;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof CompanySection)) return false;
-            CompanySection that = (CompanySection) o;
-            return Objects.equals(companyName, that.companyName) && Objects.equals(website, that.website) && Objects.equals(period, that.period);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(companyName, website, period);
-        }
-
-        @Override
-        public String toString() {
-            return "CompanySection{" +
-                    "companyName='" + companyName + '\'' +
-                    ", website='" + website + '\'' +
-                    ", period=" + period +
-                    "} " + super.toString();
+        public List<Period> getPeriods() {
+            return new ArrayList<>(periods);
         }
     }
 
-    private class Period {
+    public class Period implements Comparable<Period> {
         private final LocalDate startDate;
         private LocalDate finishDate;
+        private final String companyName;
+        private final String website;
         private final String title;
         private String description;
 
-        public Period(LocalDate startDate, LocalDate finishDate, String title, String description) {
+        public Period(LocalDate startDate, LocalDate finishDate, String companyName,
+                      String website, String description) {
+            this(startDate, finishDate, companyName, website, null, description);
+        }
+
+        public Period(LocalDate startDate, LocalDate finishDate, String companyName,
+                      String website, String description, String title) {
             this.startDate = startDate;
             this.finishDate = finishDate;
+            this.companyName = companyName;
+            this.website = website;
             this.title = title;
             this.description = description;
         }
@@ -221,6 +221,14 @@ public class Resume {
 
         public LocalDate getFinishDate() {
             return finishDate;
+        }
+
+        public String getCompanyName() {
+            return companyName;
+        }
+
+        public String getWebsite() {
+            return website;
         }
 
         public String getTitle() {
@@ -244,12 +252,14 @@ public class Resume {
             if (this == o) return true;
             if (!(o instanceof Period)) return false;
             Period period = (Period) o;
-            return Objects.equals(startDate, period.startDate) && Objects.equals(finishDate, period.finishDate) && Objects.equals(title, period.title) && Objects.equals(description, period.description);
+            return Objects.equals(startDate, period.startDate) && Objects.equals(finishDate, period.finishDate)
+                    && Objects.equals(companyName, period.companyName) && Objects.equals(website, period.website)
+                    && Objects.equals(title, period.title) && Objects.equals(description, period.description);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(startDate, finishDate, title, description);
+            return Objects.hash(startDate, finishDate, companyName, website, title, description);
         }
 
         @Override
@@ -257,14 +267,21 @@ public class Resume {
             return "Period{" +
                     "startDate=" + startDate +
                     ", finishDate=" + finishDate +
+                    ", companyName='" + companyName + '\'' +
+                    ", website='" + website + '\'' +
                     ", title='" + title + '\'' +
                     ", description='" + description + '\'' +
                     '}';
         }
+
+        @Override
+        public int compareTo(Period o) {
+            return startDate.compareTo(o.startDate);
+        }
     }
 
     public class StorySection extends Section {
-        private List<String> stories = new ArrayList<>();
+        private final List<String> stories = new ArrayList<>();
 
         public void addStory(String story) {
             if (story != null) stories.add(story);
