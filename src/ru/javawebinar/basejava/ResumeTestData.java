@@ -1,8 +1,6 @@
 package ru.javawebinar.basejava;
 
-import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.model.SectionType;
+import ru.javawebinar.basejava.model.*;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -34,10 +32,10 @@ public class ResumeTestData {
     }
 
     private static void addTextSections(Resume resume) {
-        resume.addSection(SectionType.OBJECTIVE, resume.new TextSection("Ведущий стажировок и корпоративного " +
+        resume.addSection(SectionType.OBJECTIVE, new TextSection("Ведущий стажировок и корпоративного " +
                                                                                 "обучения" + " по Java Web и " +
                                                                                 "Enterprise технологиям"));
-        resume.addSection(SectionType.PERSONAL, resume.new TextSection("Аналитический склад ума, сильная логика, " +
+        resume.addSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, " +
                                                                                "креативность, инициативность. Пурист "
                                                                                + "кода и архитектуры."));
 
@@ -45,7 +43,7 @@ public class ResumeTestData {
     }
 
     private static void addAchievements(Resume resume) {
-        Resume.StorySection achievements = resume.new StorySection();
+        ListSection achievements = new ListSection();
         achievements.addStory("Организация команды и успешная реализация Java проектов для сторонних заказчиков: " +
                                       "приложения автопарк на стеке Spring Cloud/микросервисы, система мониторинга " +
                                       "показателей спортсменов на Spring Boot, участие в проекте МЭШ на Play-2, " +
@@ -79,7 +77,7 @@ public class ResumeTestData {
     }
 
     private static void addQualifications(Resume resume) {
-        Resume.StorySection qualifications = resume.new StorySection();
+        ListSection qualifications = new ListSection();
         qualifications.addStory("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2 ");
         qualifications.addStory("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
         qualifications.addStory("DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle, MySQL, "
@@ -110,13 +108,13 @@ public class ResumeTestData {
     }
 
     private static void addExperience(Resume resume) {
-        Resume.CompanySection experience = resume.new CompanySection();
+        CompanySection experience = new CompanySection();
 
-        experience.addPeriod(resume.new Period(LocalDate.of(2013, Month.OCTOBER, 1), LocalDate.now(),
+        experience.addPeriod(new Period(LocalDate.of(2013, Month.OCTOBER, 1), LocalDate.now(),
                                                "Java Online " + "Projects", "http://javaops.ru/", "Создание, " +
                                                        "организация и проведение Java онлайн " + "проектов и " +
                                                        "стажировок.", "Автор проекта."));
-        experience.addPeriod(resume.new Period(LocalDate.of(2014, Month.OCTOBER, 1), LocalDate.of(2016, Month.JANUARY
+        experience.addPeriod(new Period(LocalDate.of(2014, Month.OCTOBER, 1), LocalDate.of(2016, Month.JANUARY
                 , 1), "Wrike", "https://www.wrike.com/",
                                                "Проектирование и разработка онлайн платформы управления " +
                                                        "проектами Wrike (Java 8 API, Maven, " + "Spring, MyBatis, " +
@@ -130,12 +128,12 @@ public class ResumeTestData {
     }
 
     private static void addEducation(Resume resume) {
-        Resume.CompanySection education = resume.new CompanySection();
+        CompanySection education = new CompanySection();
 
-        education.addPeriod(resume.new Period(LocalDate.of(2013, Month.MARCH, 1), LocalDate.of(2013, Month.APRIL, 1),
+        education.addPeriod(new Period(LocalDate.of(2013, Month.MARCH, 1), LocalDate.of(2013, Month.APRIL, 1),
                                               "Coursera", "https://www.coursera.org/course/progfun",
                                               "'Functional " + "Programming Principles in Scala' by Martin Odersky"));
-        education.addPeriod(resume.new Period(LocalDate.of(2011, Month.MARCH, 1), LocalDate.of(2011, Month.APRIL, 1),
+        education.addPeriod(new Period(LocalDate.of(2011, Month.MARCH, 1), LocalDate.of(2011, Month.APRIL, 1),
                                               "Luxoft", "http://www.luxoft-training.ru/training/catalog/course" +
                                                       ".html?ID=22366",
                                               "Курс 'Объектно-ориентированный анализ ИС. " + "Концептуальное " +
