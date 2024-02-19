@@ -3,8 +3,10 @@ package ru.javawebinar.basejava.model;
 
 import ru.javawebinar.basejava.exception.ResumeException;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Initial resume class
@@ -59,6 +61,14 @@ public class Resume {
         }
     }
 
+    public void removeContact(ContactType contactType) {
+        if (contactsMap.containsKey(contactType)) {
+            contactsMap.remove(contactType);
+        } else {
+            throw new ResumeException("Contact not exist");
+        }
+    }
+
     public void addSection(SectionType sectionType, Section section) {
         if (!sectionMap.containsKey(sectionType)) {
             sectionMap.put(sectionType, section);
@@ -78,6 +88,14 @@ public class Resume {
     public Section getSection(SectionType sectionType) {
         if (sectionMap.containsKey(sectionType)) {
             return sectionMap.get(sectionType);
+        } else {
+            throw new ResumeException("SectionType " + sectionType + " not exist.");
+        }
+    }
+
+    public void removeSection(SectionType sectionType) {
+        if (sectionMap.containsKey(sectionType)) {
+            sectionMap.remove(sectionType);
         } else {
             throw new ResumeException("SectionType " + sectionType + " not exist.");
         }
@@ -106,180 +124,4 @@ public class Resume {
                 '}';
     }
 
-    public abstract class Section {
-
-    }
-
-    public class TextSection extends Section {
-
-        private final String text;
-
-        public TextSection(String text) {
-            this.text = text;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof TextSection)) return false;
-            TextSection that = (TextSection) o;
-            return Objects.equals(text, that.text);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(text);
-        }
-
-        @Override
-        public String toString() {
-            return "TextSection{" +
-                    "text='" + text + '\'' +
-                    '}';
-        }
-
-    }
-
-    public class CompanySection extends Section {
-        private final String companyName;
-        private final String website;
-        private final Period period;
-
-        public CompanySection(String companyName, String website, Period period) {
-            this.companyName = companyName;
-            this.website = website;
-            this.period = period;
-        }
-
-        public String getCompanyName() {
-            return companyName;
-        }
-
-        public String getWebsite() {
-            return website;
-        }
-
-        public Period getPeriod() {
-            return period;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof CompanySection)) return false;
-            CompanySection that = (CompanySection) o;
-            return Objects.equals(companyName, that.companyName) && Objects.equals(website, that.website) && Objects.equals(period, that.period);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(companyName, website, period);
-        }
-
-        @Override
-        public String toString() {
-            return "CompanySection{" +
-                    "companyName='" + companyName + '\'' +
-                    ", website='" + website + '\'' +
-                    ", period=" + period +
-                    "} " + super.toString();
-        }
-    }
-
-    private class Period {
-        private final LocalDate startDate;
-        private LocalDate finishDate;
-        private final String title;
-        private String description;
-
-        public Period(LocalDate startDate, LocalDate finishDate, String title, String description) {
-            this.startDate = startDate;
-            this.finishDate = finishDate;
-            this.title = title;
-            this.description = description;
-        }
-
-        public LocalDate getStartDate() {
-            return startDate;
-        }
-
-        public LocalDate getFinishDate() {
-            return finishDate;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setFinishDate(LocalDate finishDate) {
-            this.finishDate = finishDate;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Period)) return false;
-            Period period = (Period) o;
-            return Objects.equals(startDate, period.startDate) && Objects.equals(finishDate, period.finishDate) && Objects.equals(title, period.title) && Objects.equals(description, period.description);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(startDate, finishDate, title, description);
-        }
-
-        @Override
-        public String toString() {
-            return "Period{" +
-                    "startDate=" + startDate +
-                    ", finishDate=" + finishDate +
-                    ", title='" + title + '\'' +
-                    ", description='" + description + '\'' +
-                    '}';
-        }
-    }
-
-    public class StorySection extends Section {
-        private List<String> stories = new ArrayList<>();
-
-        public void addStory(String story) {
-            if (story != null) stories.add(story);
-        }
-
-        public List<String> getStories() {
-            return new ArrayList<>(stories);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof StorySection)) return false;
-            StorySection that = (StorySection) o;
-            return Objects.equals(stories, that.stories);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(stories);
-        }
-
-        @Override
-        public String toString() {
-            return "StorySection{" +
-                    "stories=" + stories +
-                    "} " + super.toString();
-        }
-    }
 }

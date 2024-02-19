@@ -1,35 +1,42 @@
 package ru.javawebinar.basejava.model;
 
-import java.util.*;
+import ru.javawebinar.basejava.exception.ResumeException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class CompanySection extends Section {
-    private final List<Company> companies;
+    private final Set<Period> periods = new TreeSet<>();
 
-    public CompanySection(List<Company> companies) {
-        Objects.requireNonNull(companies, "companies must not be null");
-        this.companies = companies;
+    public void addPeriod(Period period) {
+        if (!periods.contains(period)) {
+            periods.add(period);
+        } else {
+            throw new ResumeException("Period " + period + " already exist.");
+        }
     }
 
-    public List<Company> getCompanies() {
-        return companies;
+    public void updatePeriod(Period period) {
+        //TODO find way to search periods by field
+        if (periods.contains(period)) {
+            periods.remove(period);
+            periods.add(period);
+        } else {
+            throw new ResumeException("Period " + period + " already exist.");
+        }
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CompanySection that = (CompanySection) o;
-        return Objects.equals(companies, that.companies);
+    public void removePeriod(Period period) {
+        if (periods.contains(period)) {
+            periods.remove(period);
+        } else {
+            throw new ResumeException("Period " + period + " not exist.");
+        }
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(companies);
-    }
-
-    @Override
-    public String toString() {
-        return "CompanySection{" + "companies=" + companies + "} " + super.toString();
+    public List<Period> getPeriods() {
+        return new ArrayList<>(periods);
     }
 }
