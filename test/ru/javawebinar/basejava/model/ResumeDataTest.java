@@ -23,14 +23,10 @@ class ResumeDataTest {
     private static final String GIT_HUB = "https://github.com/gkislin";
     private static final String STACKOVERFLOW = "https://stackoverflow.com/users/548473";
     private static final String HOMEPAGE = "http://gkislin.ru/";
-
-
-
-
-
     private final Resume resume = new Resume(UUID, FULL_NAME);
-    private final ListSection achievements = new ListSection();
-    private final ListSection qualifications = new ListSection();
+    private final CompanySection EXPERITNCE_SECTION = CompanySectionTest.experience;
+    private final TextSection OBJECTIVE_SECTION = new TextSection(OBJECTIVE);
+    private final TextSection PERSONAL_SECTION = new TextSection(PERSONAL);
 
     @BeforeEach
     void setUp() {
@@ -42,8 +38,8 @@ class ResumeDataTest {
         resume.addContact(ContactType.STACKOVERFLOW, STACKOVERFLOW);
         resume.addContact(ContactType.HOMEPAGE, HOMEPAGE);
 
-        resume.addSection(SectionType.OBJECTIVE, new TextSection(OBJECTIVE));
-        resume.addSection(SectionType.PERSONAL, new TextSection(PERSONAL));
+        resume.addSection(SectionType.OBJECTIVE, OBJECTIVE_SECTION);
+        resume.addSection(SectionType.PERSONAL, PERSONAL_SECTION);
     }
 
     @Test
@@ -59,7 +55,7 @@ class ResumeDataTest {
     @Test
     void addContact() {
         ContactType phone = ContactType.PHONE;
-        assertThrowsExist(phone, PHONE);
+        assertContactThrowsExist(phone, PHONE);
         doRemoveContact(phone);
         resume.addContact(phone, NEW_NUMBER);
         assertGetContact(NEW_NUMBER, phone);
@@ -85,7 +81,7 @@ class ResumeDataTest {
     @Test
     void removeContact() {
         doRemoveContact(ContactType.PHONE);
-        assertThrowsNotExist(ContactType.PHONE);
+        assertContactThrowsNotExist(ContactType.PHONE);
     }
 
     void doRemoveContact(ContactType contactType) {
@@ -94,6 +90,8 @@ class ResumeDataTest {
 
     @Test
     void addSection() {
+        resume.addSection(SectionType.EXPERIENCE, EXPERITNCE_SECTION);
+        assertEquals(EXPERITNCE_SECTION, resume.getSection(SectionType.EXPERIENCE));
     }
 
     @Test
@@ -102,17 +100,21 @@ class ResumeDataTest {
 
     @Test
     void getSection() {
+        assertEquals(OBJECTIVE_SECTION, resume.getSection(SectionType.OBJECTIVE));
+        assertEquals(PERSONAL_SECTION, resume.getSection(SectionType.PERSONAL));
     }
 
     @Test
     void removeSection() {
+        resume.removeSection(SectionType.OBJECTIVE);
+        assertThrows(ResumeException.class,()->resume.getSection(SectionType.OBJECTIVE));
     }
 
-    void assertThrowsExist(ContactType contactType, String contact) {
+    void assertContactThrowsExist(ContactType contactType, String contact) {
         assertThrows(ResumeException.class, () -> resume.addContact(contactType, contact));
     }
 
-    void assertThrowsNotExist(ContactType contactType) {
+    void assertContactThrowsNotExist(ContactType contactType) {
         assertThrows(ResumeException.class, () -> resume.getContact(contactType));
     }
 
