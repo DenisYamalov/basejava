@@ -11,7 +11,7 @@ import static ru.javawebinar.basejava.model.TextSectionTest.OBJECTIVE;
 import static ru.javawebinar.basejava.model.TextSectionTest.PERSONAL;
 
 @Suite
-@SelectClasses(TextSectionTest.class)
+@SelectClasses({TextSectionTest.class, ListSectionTest.class, CompanySectionTest.class})
 class ResumeDataTest {
     private static final String FULL_NAME = "Григорий Кислин";
     private static final String UUID = "uuid1";
@@ -25,17 +25,7 @@ class ResumeDataTest {
     private static final String HOMEPAGE = "http://gkislin.ru/";
 
 
-    private static final String ACHIEVEMENT_1 = "Организация команды и успешная реализация Java проектов для " +
-            "сторонних заказчиков: приложения автопарк на стеке Spring Cloud/микросервисы, система мониторинга " +
-            "показателей спортсменов на Spring Boot, участие в проекте МЭШ на Play-2, многомодульный Spring Boot + "
-            + "Vaadin проект для комплексных DIY смет";
-    private static final String ACHIEVEMENT_2 = "С 2013 года: разработка проектов \"Разработка Web приложения\"," +
-            "\"Java Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP)" +
-            ". Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. Более 3500 " +
-            "выпускников.";
-    private static final String QUALIFICATION_1 = "JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, " +
-            "WebLogic, WSO2 ";
-    private static final String QUALIFICATION_2 = "Version control: Subversion, Git, Mercury, ClearCase, Perforce";
+
 
 
     private final Resume resume = new Resume(UUID, FULL_NAME);
