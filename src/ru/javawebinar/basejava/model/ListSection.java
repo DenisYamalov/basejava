@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends Section {
-    private final List<String> stories = new ArrayList<>();
+    private List<String> list = new ArrayList<>();
 
-    public void addStory(String story) {
-        if (story != null) stories.add(story);
+    public List<String> getList() {
+        return list;
     }
 
-    public List<String> getStories() {
-        return new ArrayList<>(stories);
+    public void setList(List<String> list) {
+        this.list = list;
     }
 
     @Override
@@ -20,18 +20,16 @@ public class ListSection extends Section {
         if (this == o) return true;
         if (!(o instanceof ListSection)) return false;
         ListSection that = (ListSection) o;
-        return Objects.equals(stories, that.stories);
+        return Objects.equals(list, that.list);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stories);
+        return Objects.hash(list);
     }
 
     @Override
     public String toString() {
-        return "StorySection{" +
-                "stories=" + stories +
-                "} " + super.toString();
+        return "ListSection{" + "list=" + list + '}';
     }
 }
