@@ -1,28 +1,35 @@
 package ru.javawebinar.basejava.model;
 
-import ru.javawebinar.basejava.exception.ResumeException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ListSection extends AbstractSectionStorage<String> {
-    public ListSection() {
-        super(new ArrayList<>());
+public class ListSection extends Section {
+    private List<String> list = new ArrayList<>();
+
+    public List<String> getList() {
+        return list;
+    }
+
+    public void setList(List<String> list) {
+        this.list = list;
     }
 
     @Override
-    protected void addExisting(String s) {
-        throw new ResumeException("Story " + s + " already exist.");
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ListSection)) return false;
+        ListSection that = (ListSection) o;
+        return Objects.equals(list, that.list);
     }
 
     @Override
-    protected void addNotExisting(String s) {
-        throw new ResumeException("Story " + s + " not exist.");
+    public int hashCode() {
+        return Objects.hash(list);
     }
 
     @Override
     public String toString() {
-        return "ListSection{" + "storage=" + storage + "} " + super.toString();
+        return "ListSection{" + "list=" + list + '}';
     }
 }
