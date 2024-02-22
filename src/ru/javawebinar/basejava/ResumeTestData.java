@@ -22,13 +22,13 @@ public class ResumeTestData {
     }
 
     private static void addContacts(Resume resume) {
-        resume.setContact("PHONE", "+7(921) 855-0482 ");
-        resume.setContact("SKYPE", "skype:grigory.kislin");
-        resume.setContact("EMAIL", "gkislin@yandex.ru");
-        resume.setContact("LINKED_IN", "https://www.linkedin.com/in/gkislin");
-        resume.setContact("GIT_HUB", "https://github.com/gkislin");
-        resume.setContact("STACKOVERFLOW", "https://stackoverflow.com/users/548473");
-        resume.setContact("HOMEPAGE", "http://gkislin.ru/");
+        resume.setContact(ContactType.PHONE, "+7(921) 855-0482 ");
+        resume.setContact(ContactType.SKYPE, "skype:grigory.kislin");
+        resume.setContact(ContactType.EMAIL, "gkislin@yandex.ru");
+        resume.setContact(ContactType.LINKED_IN, "https://www.linkedin.com/in/gkislin");
+        resume.setContact(ContactType.GIT_HUB, "https://github.com/gkislin");
+        resume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
+        resume.setContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
         LOGGER.info("Contacts added: " + resume);
     }
 
