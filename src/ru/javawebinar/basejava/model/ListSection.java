@@ -1,19 +1,20 @@
 package ru.javawebinar.basejava.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends Section {
-    private List<String> list = new ArrayList<>();
+    private final List<String> list;
+
+    public ListSection(List<String> list) {
+        Objects.requireNonNull(list, "list must not be null");
+        this.list = list;
+    }
 
     public List<String> getList() {
         return list;
     }
 
-    public void setList(List<String> list) {
-        this.list = list;
-    }
 
     @Override
     public boolean equals(Object o) {

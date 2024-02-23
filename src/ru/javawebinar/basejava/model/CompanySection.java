@@ -3,15 +3,17 @@ package ru.javawebinar.basejava.model;
 import java.util.*;
 
 public class CompanySection extends Section {
-    private List<Company> companies = new ArrayList<>();
+    private final List<Company> companies;
+
+    public CompanySection(List<Company> companies) {
+        Objects.requireNonNull(companies, "companies must not be null");
+        this.companies = companies;
+    }
 
     public List<Company> getCompanies() {
         return companies;
     }
 
-    public void setCompanies(List<Company> companies) {
-        this.companies = companies;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -28,8 +30,6 @@ public class CompanySection extends Section {
 
     @Override
     public String toString() {
-        return "CompanySection{" +
-                "companies=" + companies +
-                "} " + super.toString();
+        return "CompanySection{" + "companies=" + companies + "} " + super.toString();
     }
 }

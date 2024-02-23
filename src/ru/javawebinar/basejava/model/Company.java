@@ -1,36 +1,41 @@
 package ru.javawebinar.basejava.model;
 
+import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class Company {
-    private final String companyName;
-    private final String website;
-    private Set<Period> periods = new TreeSet<>();
+    private final Link homepage;
+    private final Set<Period> periods;
 
-    public Company(String companyName, String website) {
-        this.companyName = companyName;
-        this.website = website;
+    public Company(String companyName, String website, Set<Period> periods) {
+        Objects.requireNonNull(periods,"periods must not be null");
+        this.homepage = new Link(companyName, website);
+        this.periods = periods;
     }
 
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public String getWebsite() {
-        return website;
+    public Link getHomepage() {
+        return homepage;
     }
 
     public Set<Period> getPeriods() {
         return periods;
     }
 
-    public void setPeriods(Set<Period> periods) {
-        this.periods = periods;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Company)) return false;
+        Company company = (Company) o;
+        return Objects.equals(homepage, company.homepage) && Objects.equals(periods, company.periods);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(homepage, periods);
     }
 
     @Override
     public String toString() {
-        return "CompanySection{" + "companyName='" + companyName + '\'' + ", website='" + website + '\'' + ", periods=" + periods + "} " + super.toString();
+        return "Company{" + "homepage=" + homepage + ", periods=" + periods + '}';
     }
 }
