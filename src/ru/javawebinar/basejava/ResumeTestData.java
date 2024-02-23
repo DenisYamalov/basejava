@@ -1,6 +1,7 @@
 package ru.javawebinar.basejava;
 
 import ru.javawebinar.basejava.model.*;
+import ru.javawebinar.basejava.util.DateUtil;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -116,14 +117,14 @@ public class ResumeTestData {
         List<Company> companies = new ArrayList<>();
         Set<Period> periods = new TreeSet<>();
 
-        periods.add(new Period(LocalDate.of(2013, Month.OCTOBER, 1), LocalDate.now(), "Создание, организация и " +
+        periods.add(new Period(DateUtil.of(2013, Month.OCTOBER), LocalDate.now(), "Создание, организация и " +
                 "проведение Java онлайн проектов и стажировок.", "Автор проекта."));
         Company company1 = new Company("Java Online Projects", "http://javaops.ru/", periods);
 
 
         Set<Period> periods2 = new TreeSet<>();
-        periods2.add(new Period(LocalDate.of(2014, Month.OCTOBER, 1),
-                                LocalDate.of(2016, Month.JANUARY, 1),
+        periods2.add(new Period(DateUtil.of(2014, Month.OCTOBER),
+                                DateUtil.of(2016, Month.JANUARY),
                                 "Проектирование и разработка онлайн платформы управления проектами " +
                                         "Wrike (Java 8" +
                                         " API, Maven, " + "Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
@@ -143,14 +144,14 @@ public class ResumeTestData {
         List<Company> companies = new ArrayList<>();
         Set<Period> periods = new TreeSet<>();
 
-        periods.add(new Period(LocalDate.of(2013, Month.MARCH, 1), LocalDate.of(2013, Month.APRIL, 1),
+        periods.add(new Period(DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.APRIL),
                                "'Functional " + "Programming Principles in Scala' by Martin Odersky"));
         Company company1 = new Company("Coursera", "https://www.coursera.org/course/progfun.html?ID=22366", periods);
 
         Set<Period> periods2 = new TreeSet<>();
 
-        periods2.add(new Period(LocalDate.of(2011, Month.MARCH, 1),
-                                LocalDate.of(2011, Month.APRIL, 1), "Курс " +
+        periods2.add(new Period(DateUtil.of(2011, Month.MARCH),
+                                DateUtil.of(2011, Month.APRIL), "Курс " +
                 "'Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.'"));
         Company company2 = new Company("Luxoft",
                                        "http://www.luxoft-training.ru/training/catalog/course", periods2);
