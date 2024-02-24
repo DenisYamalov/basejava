@@ -18,13 +18,28 @@ public class ResumeTestData {
         Resume resume = new Resume("Григорий Кислин");
 
         addContacts(resume);
+        LOGGER.info("Contacts added: " + resume);
+        addTextSections(resume);
+        LOGGER.info("Text sections added: " + resume);
+        addAchievements(resume);
+        LOGGER.info("Achievements added: " + resume);
+        addQualifications(resume);
+        LOGGER.info("Qualifications added: " + resume);
+        addExperience(resume);
+        LOGGER.info("Experience added: " + resume);
+        addEducation(resume);
+        LOGGER.info("Education added: " + resume);
+    }
+    public static Resume fulfillResume (String uuid, String fullName){
+        Resume resume = new Resume(uuid,fullName);
+        addContacts(resume);
         addTextSections(resume);
         addAchievements(resume);
         addQualifications(resume);
         addExperience(resume);
         addEducation(resume);
+        return resume;
     }
-
     private static void addContacts(Resume resume) {
         resume.setContact(ContactType.PHONE, "+7(921) 855-0482 ");
         resume.setContact(ContactType.SKYPE, "skype:grigory.kislin");
@@ -33,7 +48,6 @@ public class ResumeTestData {
         resume.setContact(ContactType.GIT_HUB, "https://github.com/gkislin");
         resume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
         resume.setContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
-        LOGGER.info("Contacts added: " + resume);
     }
 
     private static void addTextSections(Resume resume) {
@@ -43,8 +57,6 @@ public class ResumeTestData {
         resume.setSection(SectionType.PERSONAL, new TextSection("Аналитический склад ума, сильная логика, " +
                                                                         "креативность, инициативность. Пурист " +
                                                                         "кода и архитектуры."));
-
-        LOGGER.info("Text sections added: " + resume);
     }
 
     private static void addAchievements(Resume resume) {
@@ -78,8 +90,6 @@ public class ResumeTestData {
 
         ListSection achievements = new ListSection(achievementsList);
         resume.setSection(SectionType.ACHIEVEMENT, achievements);
-
-        LOGGER.info("Achievements added: " + resume);
     }
 
     private static void addQualifications(Resume resume) {
@@ -109,8 +119,6 @@ public class ResumeTestData {
 
         ListSection qualifications = new ListSection(qualificationsList);
         resume.setSection(SectionType.QUALIFICATIONS, qualifications);
-
-        LOGGER.info("Qualifications added: " + resume);
     }
 
     private static void addExperience(Resume resume) {
@@ -137,7 +145,6 @@ public class ResumeTestData {
         CompanySection experience1 = new CompanySection(companies);
 
         resume.setSection(SectionType.EXPERIENCE, experience1);
-        LOGGER.info("Experience added: " + resume);
     }
 
     private static void addEducation(Resume resume) {
@@ -160,7 +167,5 @@ public class ResumeTestData {
         companies.add(company2);
         CompanySection education = new CompanySection(companies);
         resume.setSection(SectionType.EDUCATION, education);
-
-        LOGGER.info("Education added: " + resume);
     }
 }
