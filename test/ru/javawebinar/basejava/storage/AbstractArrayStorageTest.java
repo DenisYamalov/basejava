@@ -1,6 +1,7 @@
 package ru.javawebinar.basejava.storage;
 
 import org.junit.jupiter.api.Test;
+import ru.javawebinar.basejava.ResumeTestData;
 import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.model.Resume;
 
@@ -17,11 +18,11 @@ public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
         storage.clear();
         try {
             for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
-                storage.save(new Resume("uuid" + i, "Name" + i));
+                storage.save(ResumeTestData.fulfillResume("uuid" + i, "Name" + i));
             }
         } catch (Exception e) {
             fail("Storage fulfilled before limit");
         }
-        assertThrows(StorageException.class, () -> storage.save(new Resume("", "")));
+        assertThrows(StorageException.class, () -> storage.save(ResumeTestData.fulfillResume("", "")));
     }
 }
