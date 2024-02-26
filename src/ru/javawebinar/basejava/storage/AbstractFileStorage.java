@@ -26,17 +26,45 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        Arrays.stream(directory.listFiles()).filter(File::isFile).forEach(this::doDelete);
+        Arrays.stream(getFiles()).filter(File::isFile).forEach(this::doDelete);
+
     }
 
     @Override
     public int size() {
-        return (int) Arrays.stream(directory.listFiles()).filter(File::isFile).count();
+        return (int) Arrays.stream(getFiles()).filter(File::isFile).count();
+    }
+
+    @Override
+    protected List<Resume> getAll() {
+        return Arrays.stream(getFiles())
+                .filter(File::isFile)
+                .map(this::doGet)
+                .collect(Collectors.toList());
     }
 
     @Override
     protected File getSearchKey(String uuid) {
         return new File(directory, uuid);
+    }
+
+    @Override
+    protected Resume doGet(File file) {
+        try {
+            return doRead(file);
+        } catch (IOException e) {
+            throw new StorageException("IO error", file.getName(), e);
+        }
+    }
+
+    @Override
+    protected void doSave(File file, Resume r) {
+        try {
+            file.createNewFile();
+            doWrite(r, file);
+        } catch (IOException e) {
+            throw new StorageException("IO error", file.getName(), e);
+        }
     }
 
     @Override
@@ -54,43 +82,21 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected void doSave(File file, Resume r) {
-        try {
-            file.createNewFile();
-            doWrite(r, file);
-        } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+    protected void doDelete(File file) {
+        if (!file.delete()) {
+            throw new StorageException("File not deleted: ", file.getName());
         }
-    }
-
-    protected abstract void doWrite(Resume r, File file) throws IOException;
-
-    @Override
-    protected Resume doGet(File file) {
-        Resume resume = null;
-        try {
-            resume = doRead(file);
-        } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
-        }
-        return resume;
     }
 
     protected abstract Resume doRead(File file) throws IOException;
 
-    @Override
-    protected void doDelete(File file) {
-        file.delete();
-    }
+    protected abstract void doWrite(Resume r, File file) throws IOException;
 
-    @Override
-    protected List<Resume> getAll() {
-        return Arrays.stream(directory.listFiles()).filter(File::isFile).map(f -> {
-            try {
-                return doRead(f);
-            } catch (IOException e) {
-                throw new StorageException("IO error", f.getName(), e);
-            }
-        }).collect(Collectors.toList());
+    private File[] getFiles() {
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Path must be directory", directory.getName());
+        }
+        return files;
     }
 }
