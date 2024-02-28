@@ -6,7 +6,7 @@ public class Resume {
     // Unique identifier
     private final String uuid;
     private final String fullName;
-    private final Map<String, String> contactsMap = new HashMap<>();
+    private final Map<ContactType, String> contactsMap = new EnumMap<>(ContactType.class);
     private final Map<SectionType, Section> sectionMap = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
@@ -28,15 +28,15 @@ public class Resume {
         return fullName;
     }
 
-    public void setContact(String contactType, String contact) {
+    public void setContact(ContactType contactType, String contact) {
         contactsMap.put(contactType, contact);
     }
 
-    public String getContact(String contactType) {
+    public String getContact(ContactType contactType) {
         return contactsMap.get(contactType);
     }
 
-    public void removeContact(String contactType) {
+    public void removeContact(ContactType contactType) {
         contactsMap.remove(contactType);
     }
 

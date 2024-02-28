@@ -1,36 +1,35 @@
 package ru.javawebinar.basejava.model;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class CompanySection extends Section {
-    private final String companyName;
-    private final String website;
-    private Set<Period> periods = new TreeSet<>();
+    private final List<Company> companies;
 
-    public CompanySection(String companyName, String website) {
-        this.companyName = companyName;
-        this.website = website;
+    public CompanySection(List<Company> companies) {
+        Objects.requireNonNull(companies, "companies must not be null");
+        this.companies = companies;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public List<Company> getCompanies() {
+        return companies;
     }
 
-    public String getWebsite() {
-        return website;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CompanySection that = (CompanySection) o;
+        return Objects.equals(companies, that.companies);
     }
 
-    public Set<Period> getPeriods() {
-        return periods;
-    }
-
-    public void setPeriods(Set<Period> periods) {
-        this.periods = periods;
+    @Override
+    public int hashCode() {
+        return Objects.hash(companies);
     }
 
     @Override
     public String toString() {
-        return "CompanySection{" + "companyName='" + companyName + '\'' + ", website='" + website + '\'' + ", periods=" + periods + "} " + super.toString();
+        return "CompanySection{" + "companies=" + companies + "} " + super.toString();
     }
 }
