@@ -57,6 +57,8 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         }
     }
 
+    protected abstract Resume doRead(File file) throws IOException;
+
     @Override
     protected void doSave(File file, Resume r) {
         try {
@@ -66,6 +68,8 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new StorageException("IO error", file.getName(), e);
         }
     }
+
+    protected abstract void doWrite(Resume r, File file) throws IOException;
 
     @Override
     protected void doUpdate(File file, Resume r) {
@@ -87,10 +91,6 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new StorageException("File not deleted: ", file.getName());
         }
     }
-
-    protected abstract Resume doRead(File file) throws IOException;
-
-    protected abstract void doWrite(Resume r, File file) throws IOException;
 
     private File[] getFiles() {
         File[] files = directory.listFiles();
