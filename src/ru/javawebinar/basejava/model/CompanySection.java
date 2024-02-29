@@ -5,6 +5,10 @@ import java.util.*;
 public class CompanySection extends Section {
     private final List<Company> companies;
 
+    public CompanySection(Company... companies) {
+        this(Arrays.asList(companies));
+    }
+
     public CompanySection(List<Company> companies) {
         Objects.requireNonNull(companies, "companies must not be null");
         this.companies = companies;

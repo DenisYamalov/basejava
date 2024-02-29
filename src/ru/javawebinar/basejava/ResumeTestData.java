@@ -123,21 +123,21 @@ public class ResumeTestData {
 
     private static void addExperience(Resume resume) {
         List<Company> companies = new ArrayList<>();
-        Set<Period> periods = new TreeSet<>();
+        Set<Company.Period> periods = new TreeSet<>();
 
-        periods.add(new Period(DateUtil.of(2013, Month.OCTOBER), LocalDate.now(), "Создание, организация и " +
+        periods.add(new Company.Period(DateUtil.of(2013, Month.OCTOBER), LocalDate.now(), "Создание, организация и " +
                 "проведение Java онлайн проектов и стажировок.", "Автор проекта."));
         Company company1 = new Company("Java Online Projects", "http://javaops.ru/", periods);
 
 
-        Set<Period> periods2 = new TreeSet<>();
-        periods2.add(new Period(DateUtil.of(2014, Month.OCTOBER),
-                                DateUtil.of(2016, Month.JANUARY),
-                                "Проектирование и разработка онлайн платформы управления проектами " +
+        Set<Company.Period> periods2 = new TreeSet<>();
+        periods2.add(new Company.Period(DateUtil.of(2014, Month.OCTOBER),
+                                        DateUtil.of(2016, Month.JANUARY),
+                                        "Проектирование и разработка онлайн платформы управления проектами " +
                                         "Wrike (Java 8" +
                                         " API, Maven, " + "Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). " +
                                         "Двухфакторная аутентификация, авторизация по OAuth1, OAuth2, JWT SSO.",
-                                "Старший разработчик (backend)"));
+                                        "Старший разработчик (backend)"));
         Company company2 = new Company("Wrike", "https://www.wrike.com", periods2);
 
         companies.add(company1);
@@ -149,16 +149,16 @@ public class ResumeTestData {
 
     private static void addEducation(Resume resume) {
         List<Company> companies = new ArrayList<>();
-        Set<Period> periods = new TreeSet<>();
+        Set<Company.Period> periods = new TreeSet<>();
 
-        periods.add(new Period(DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.APRIL),
-                               "'Functional " + "Programming Principles in Scala' by Martin Odersky"));
+        periods.add(new Company.Period(DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.APRIL),
+                                       "'Functional " + "Programming Principles in Scala' by Martin Odersky"));
         Company company1 = new Company("Coursera", "https://www.coursera.org/course/progfun.html?ID=22366", periods);
 
-        Set<Period> periods2 = new TreeSet<>();
+        Set<Company.Period> periods2 = new TreeSet<>();
 
-        periods2.add(new Period(DateUtil.of(2011, Month.MARCH),
-                                DateUtil.of(2011, Month.APRIL), "Курс " +
+        periods2.add(new Company.Period(DateUtil.of(2011, Month.MARCH),
+                                        DateUtil.of(2011, Month.APRIL), "Курс " +
                 "'Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.'"));
         Company company2 = new Company("Luxoft",
                                        "http://www.luxoft-training.ru/training/catalog/course", periods2);

@@ -40,18 +40,22 @@ public class MainFile {
         System.out.println();
         System.out.println("Get dir");
         MainFile mainFile = new MainFile();
-        mainFile.getDir(new File("./"));
+        mainFile.getDir(dir);
     }
 
     public void getDir(File dir) throws IOException {
-        System.out.println(dir.getCanonicalPath());
-        if (dir.isDirectory()) {
-            String[] dirs = dir.list();
-            if (dirs != null) {
-                for (String file : dirs) {
-                    getDir(new File(dir.getCanonicalPath() + "/" + file));
+        File[] files = dir.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    System.out.println("File: " + file.getName());
+                } else if (file.isDirectory()) {
+                    System.out.println("Directory: " + file.getName());
+                    getDir(file);
                 }
             }
         }
+
     }
 }
