@@ -1,12 +1,14 @@
 package ru.javawebinar.basejava.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Company {
+public class Company implements Serializable {
+    private static final long serialVersionUID = 4814339807787759827L;
     private final Link homepage;
     private final Set<Period> periods;
 
@@ -50,7 +52,8 @@ public class Company {
         return "Company{" + "homepage=" + homepage + ", periods=" + periods + '}';
     }
 
-    public static class Period implements Comparable<Period> {
+    public static class Period implements Comparable<Period>, Serializable {
+        private static final long serialVersionUID = -5512544207295098365L;
         private final LocalDate startDate;
         private LocalDate finishDate;
         private final String title;

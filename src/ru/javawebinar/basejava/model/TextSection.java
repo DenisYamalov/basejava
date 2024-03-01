@@ -1,9 +1,11 @@
 package ru.javawebinar.basejava.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class TextSection extends Section {
+public class TextSection extends Section implements Serializable {
 
+    private static final long serialVersionUID = -8337146369333190944L;
     private final String text;
 
     public TextSection(String text) {

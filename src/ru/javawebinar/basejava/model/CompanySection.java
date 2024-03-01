@@ -1,8 +1,10 @@
 package ru.javawebinar.basejava.model;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class CompanySection extends Section {
+public class CompanySection extends Section implements Serializable {
+    private static final long serialVersionUID = -7859061215880493601L;
     private final List<Company> companies;
 
     public CompanySection(Company... companies) {
