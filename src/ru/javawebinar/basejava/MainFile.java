@@ -19,7 +19,7 @@ public class MainFile {
         System.out.println("Read directory");
         System.out.println();
 
-        File dir = new File("./src/ru/javawebinar/basejava");
+        File dir = new File("./src");
         System.out.println(dir.isDirectory());
         String[] list = dir.list();
         if (list != null) {
@@ -40,19 +40,19 @@ public class MainFile {
         System.out.println();
         System.out.println("Get dir");
         MainFile mainFile = new MainFile();
-        mainFile.getDir(dir);
+        mainFile.getDir(dir, "");
     }
 
-    public void getDir(File dir) throws IOException {
+    public void getDir(File dir, String space) throws IOException {
         File[] files = dir.listFiles();
 
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    System.out.println("File: " + file.getName());
+                    System.out.println(space + "File: " + file.getName());
                 } else if (file.isDirectory()) {
-                    System.out.println("Directory: " + file.getName());
-                    getDir(file);
+                    System.out.println(space + "Directory: " + file.getName());
+                    getDir(file, space + "   ");
                 }
             }
         }
