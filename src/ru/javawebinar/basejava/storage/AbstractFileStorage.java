@@ -80,15 +80,15 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected boolean isExist(File file) {
-        return file.exists();
-    }
-
-    @Override
     protected void doDelete(File file) {
         if (!file.delete()) {
             throw new StorageException("File delete error", file.getName());
         }
+    }
+
+    @Override
+    protected boolean isExist(File file) {
+        return file.exists();
     }
 
     private File[] getFiles() {
