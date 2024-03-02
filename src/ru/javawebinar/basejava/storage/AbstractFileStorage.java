@@ -11,8 +11,9 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File> {
     private final File directory;
+    private SerializationStrategy serializationStrategy;
 
-    protected AbstractFileStorage(File directory) {
+    protected AbstractFileStorage(File directory, SerializationStrategy serializationStrategy) {
         Objects.requireNonNull(directory, "directory must not be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
@@ -21,6 +22,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
         this.directory = directory;
+        this.serializationStrategy = serializationStrategy;
     }
 
     @Override
@@ -36,10 +38,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> getAll() {
-        return Arrays.stream(getFiles())
-                .filter(File::isFile)
-                .map(this::doGet)
-                .collect(Collectors.toList());
+        return Arrays.stream(getFiles()).filter(File::isFile).map(this::doGet).collect(Collectors.toList());
     }
 
     @Override
@@ -56,7 +55,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         }
     }
 
-    protected abstract Resume doRead(InputStream is) throws IOException;
+    protected Resume doRead(InputStream is) throws IOException{
+        return serializationStrategy.doRead(is);
+    }
 
     @Override
     protected void doSave(File file, Resume r) {
@@ -68,7 +69,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         doUpdate(file, r);
     }
 
-    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
+    protected void doWrite(Resume r, OutputStream os) throws IOException{
+        serializationStrategy.doWrite(r,os);
+    }
 
     @Override
     protected void doUpdate(File file, Resume r) {
@@ -97,5 +100,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             throw new StorageException("Path must be directory", directory.getName());
         }
         return files;
+    }
+
+    public void setSerializationStrategy(SerializationStrategy serializationStrategy) {
+        this.serializationStrategy = serializationStrategy;
     }
 }
