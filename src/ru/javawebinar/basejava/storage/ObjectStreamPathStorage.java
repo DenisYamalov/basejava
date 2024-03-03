@@ -1,10 +1,8 @@
 package ru.javawebinar.basejava.storage;
 
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.storage.serialstrategy.ObjectStreamStrategy;
 
-import java.io.*;
-
-public class ObjectStreamPathStorage extends AbstractPathStorage {
+public class ObjectStreamPathStorage extends PathStorage {
     public ObjectStreamPathStorage(String dir) {
         super(dir, new ObjectStreamStrategy());
     }

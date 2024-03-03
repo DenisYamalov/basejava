@@ -1,6 +1,7 @@
-package ru.javawebinar.basejava.storage;
+package ru.javawebinar.basejava.storage.serialstrategy;
 
 import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.storage.serialstrategy.SerializationStrategy;
 
 import java.io.*;
 
