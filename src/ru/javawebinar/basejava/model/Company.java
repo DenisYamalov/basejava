@@ -1,5 +1,10 @@
 package ru.javawebinar.basejava.model;
 
+import ru.javawebinar.basejava.util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -7,10 +12,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Company implements Serializable {
     private static final long serialVersionUID = 4814339807787759827L;
-    private final Link homepage;
-    private final Set<Period> periods;
+    private Link homepage;
+    private Set<Period> periods;
+
+    public Company() {
+    }
 
     public Company(Link homepage, Set<Period> periods) {
         this.homepage = homepage;
@@ -52,12 +61,18 @@ public class Company implements Serializable {
         return "Company{" + "homepage=" + homepage + ", periods=" + periods + '}';
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Comparable<Period>, Serializable {
         private static final long serialVersionUID = -5512544207295098365L;
-        private final LocalDate startDate;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate startDate;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate finishDate;
-        private final String title;
+        private String title;
         private String description;
+
+        public Period() {
+        }
 
         public Period(LocalDate startDate, LocalDate finishDate, String description) {
             this(startDate, finishDate, description, null);

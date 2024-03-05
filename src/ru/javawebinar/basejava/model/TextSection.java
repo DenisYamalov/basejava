@@ -6,7 +6,10 @@ import java.util.Objects;
 public class TextSection extends Section implements Serializable {
 
     private static final long serialVersionUID = -8337146369333190944L;
-    private final String text;
+    private String text;
+
+    public TextSection() {
+    }
 
     public TextSection(String text) {
         this.text = text;
