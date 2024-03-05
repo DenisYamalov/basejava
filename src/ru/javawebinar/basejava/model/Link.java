@@ -2,13 +2,16 @@ package ru.javawebinar.basejava.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import java.io.Serializable;
 import java.util.Objects;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Link implements Serializable {
     private static final long serialVersionUID = 6653979271719049206L;
+    @XmlAttribute(name = "name")
     private String name;
+    @XmlAttribute(name = "url")
     private String url;
 
     public Link() {

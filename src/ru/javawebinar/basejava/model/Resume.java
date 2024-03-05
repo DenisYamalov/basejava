@@ -2,16 +2,22 @@ package ru.javawebinar.basejava.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Serializable {
     private static long serialVersionUID = -8104866515450132313L;
     // Unique identifier
+    @XmlAttribute(name = "uuid")
     private String uuid;
+    @XmlAttribute(name = "fullName")
     private String fullName;
     private final Map<ContactType, String> contactsMap = new EnumMap<>(ContactType.class);
     private final Map<SectionType, Section> sectionMap = new EnumMap<>(SectionType.class);
@@ -36,6 +42,14 @@ public class Resume implements Serializable {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public Map<ContactType, String> getContacts() {
+        return contactsMap;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sectionMap;
     }
 
     public void setContact(ContactType contactType, String contact) {
@@ -67,9 +81,7 @@ public class Resume implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Resume)) return false;
         Resume resume = (Resume) o;
-        return Objects.equals(uuid, resume.uuid) && Objects.equals(fullName, resume.fullName)
-                && Objects.equals(contactsMap, resume.contactsMap)
-                && Objects.equals(sectionMap, resume.sectionMap);
+        return Objects.equals(uuid, resume.uuid) && Objects.equals(fullName, resume.fullName) && Objects.equals(contactsMap, resume.contactsMap) && Objects.equals(sectionMap, resume.sectionMap);
     }
 
     @Override
@@ -79,11 +91,7 @@ public class Resume implements Serializable {
 
     @Override
     public String toString() {
-        return "Resume{"
-                + "uuid='" + uuid + '\''
-                + ", fullName='" + fullName + '\''
-                + ", contactsMap=" + contactsMap
-                + ", sectionMap=" + sectionMap + '}';
+        return "Resume{" + "uuid='" + uuid + '\'' + ", fullName='" + fullName + '\'' + ", contactsMap=" + contactsMap + ", sectionMap=" + sectionMap + '}';
     }
 
 }
