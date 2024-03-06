@@ -1,7 +1,6 @@
 package ru.javawebinar.basejava.storage.serialstrategy;
 
-import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.*;
 
 import java.io.*;
 import java.util.Map;
@@ -19,6 +18,31 @@ public class DataStreamStrategy implements SerializationStrategy {
                 dos.writeUTF(entry.getValue());
             }
             // TODO implements sections
+            Map<SectionType, Section> sections = r.getSections();
+            dos.writeInt(sections.size());
+            sections.entrySet().forEach((s) -> {
+                try {
+                    dos.writeUTF(s.getKey().toString());
+                } catch (IOException e) {
+                    //TODO throw storage exception
+                    throw new RuntimeException(e);
+                }
+                Class<? extends Section> sectionClass = s.getValue().getClass();
+                Sections sectionsClasses = Sections.valueOf(sectionClass.getName());
+                switch (sectionsClasses) {
+                    case COMPANY_SECTION:
+                        CompanySection companySection = (CompanySection) s;
+                        companySection.getCompanies().stream();
+                        break;
+                    case LIST_SECTION:
+                        ListSection listSection = (ListSection) s;
+                        break;
+                    default:
+                        //text section
+                        TextSection textSection = (TextSection) s;
+                        break;
+                }
+            });
         }
     }
 
@@ -34,6 +58,21 @@ public class DataStreamStrategy implements SerializationStrategy {
             }
             // TODO implements sections
             return resume;
+        }
+    }
+
+    private static enum Sections {
+        COMPANY_SECTION(CompanySection.class),
+        LIST_SECTION(ListSection.class),
+        TEXT_SECTION(TextSection.class);
+        private final Class<? extends Section> section;
+
+        Sections(Class<? extends Section> section) {
+            this.section = section;
+        }
+
+        public Class<? extends Section> getSection() {
+            return section;
         }
     }
 }
