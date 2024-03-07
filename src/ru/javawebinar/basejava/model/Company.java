@@ -68,8 +68,8 @@ public class Company implements Serializable {
         private LocalDate startDate;
         @XmlJavaTypeAdapter(LocalDateAdapter.class)
         private LocalDate finishDate;
-        private String title;
         private String description;
+        private String title;
 
         public Period() {
         }
@@ -81,8 +81,8 @@ public class Company implements Serializable {
         public Period(LocalDate startDate, LocalDate finishDate, String description, String title) {
             this.startDate = startDate;
             this.finishDate = finishDate;
-            this.title = title;
             this.description = description;
+            this.title = title;
         }
 
         public LocalDate getStartDate() {

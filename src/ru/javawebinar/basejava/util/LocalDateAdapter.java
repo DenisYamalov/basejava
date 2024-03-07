@@ -5,12 +5,12 @@ import java.time.LocalDate;
 
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
     @Override
-    public LocalDate unmarshal(String s) throws Exception {
+    public LocalDate unmarshal(String s) {
         return LocalDate.parse(s);
     }
 
     @Override
-    public String marshal(LocalDate localDate) throws Exception {
+    public String marshal(LocalDate localDate) {
         return localDate.toString();
     }
 }
