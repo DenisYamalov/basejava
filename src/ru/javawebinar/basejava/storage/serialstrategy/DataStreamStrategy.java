@@ -26,20 +26,18 @@ public class DataStreamStrategy implements SerializationStrategy {
 
             Map<SectionType, Section> sections = r.getSections();
             dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, Section> s : sections.entrySet()) {
-                SectionType sectionType = s.getKey();
+            for (Map.Entry<SectionType, Section> sectionEntry : sections.entrySet()) {
+                SectionType sectionType = sectionEntry.getKey();
                 dos.writeUTF(sectionType.toString());
 
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        TextSection textSection = (TextSection) s.getValue();
-                        dos.writeUTF(textSection.getText());
+                        dos.writeUTF(((TextSection) sectionEntry.getValue()).getText());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        ListSection listSection = (ListSection) s.getValue();
-                        List<String> listSectionList = listSection.getList();
+                        List<String> listSectionList = ((ListSection) sectionEntry.getValue()).getList();
                         dos.writeInt(listSectionList.size());
                         for (String string : listSectionList) {
                             dos.writeUTF(string);
@@ -47,8 +45,7 @@ public class DataStreamStrategy implements SerializationStrategy {
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        CompanySection companySection = (CompanySection) s.getValue();
-                        List<Company> companies = companySection.getCompanies();
+                        List<Company> companies = ((CompanySection) sectionEntry.getValue()).getCompanies();
                         dos.writeInt(companies.size());
                         for (Company company : companies) {
                             dos.writeUTF(company.getHomepage().getName());
