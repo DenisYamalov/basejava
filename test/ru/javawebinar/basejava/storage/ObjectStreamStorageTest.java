@@ -4,7 +4,7 @@ import ru.javawebinar.basejava.storage.serialstrategy.ObjectStreamStrategy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ObjectStreamStorageTest extends AbstractArrayStorageTest {
+class ObjectStreamStorageTest extends AbstractStorageTest {
     public ObjectStreamStorageTest() {
         super(new FileStorage(STORAGE_DIR,new ObjectStreamStrategy()));
     }
