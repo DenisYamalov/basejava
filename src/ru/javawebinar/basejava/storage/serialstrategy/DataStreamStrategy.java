@@ -5,9 +5,8 @@ import ru.javawebinar.basejava.util.LocalDateAdapter;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Collection;
+import java.util.Objects;
 
 public class DataStreamStrategy implements SerializationStrategy {
     private static final LocalDateAdapter localDateAdapter = new LocalDateAdapter();
@@ -17,55 +16,59 @@ public class DataStreamStrategy implements SerializationStrategy {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
-            Map<ContactType, String> contacts = r.getContacts();
-            dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+            writeWithExeption(r.getContacts().entrySet(), dos, (dosT, t) -> {
+                dosT.writeUTF(t.getKey().name());
+                dosT.writeUTF(t.getValue());
+            });
 
-            Map<SectionType, Section> sections = r.getSections();
-            dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, Section> sectionEntry : sections.entrySet()) {
+            writeWithExeption(r.getSections().entrySet(), dos, (dosT, sectionEntry) -> {
                 SectionType sectionType = sectionEntry.getKey();
-                dos.writeUTF(sectionType.toString());
+                dosT.writeUTF(sectionType.toString());
 
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        dos.writeUTF(((TextSection) sectionEntry.getValue()).getText());
+                        dosT.writeUTF(((TextSection) sectionEntry.getValue()).getText());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List<String> listSectionList = ((ListSection) sectionEntry.getValue()).getList();
-                        dos.writeInt(listSectionList.size());
-                        for (String string : listSectionList) {
-                            dos.writeUTF(string);
-                        }
+                        writeWithExeption(((ListSection) sectionEntry.getValue()).getList(), dosT,
+                                          (DataOutputStream::writeUTF));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        List<Company> companies = ((CompanySection) sectionEntry.getValue()).getCompanies();
-                        dos.writeInt(companies.size());
-                        for (Company company : companies) {
-                            dos.writeUTF(company.getHomepage().getName());
-                            dos.writeUTF(company.getHomepage().getUrl());
+                        writeWithExeption(((CompanySection) sectionEntry.getValue()).getCompanies(), dosT,
+                                          (dos1, company) -> {
+                            dos1.writeUTF(company.getHomepage().getName());
+                            dos1.writeUTF(company.getHomepage().getUrl());
 
-                            Set<Company.Period> periods = company.getPeriods();
-                            dos.writeInt(periods.size());
-                            for (Company.Period period : periods) {
-                                dos.writeUTF(localDateAdapter.marshal(period.getStartDate()));
-                                dos.writeUTF(localDateAdapter.marshal(period.getFinishDate()));
-                                dos.writeUTF(period.getDescription());
+                            writeWithExeption(company.getPeriods(), dos1, (dos2, period) -> {
+                                dos2.writeUTF(localDateAdapter.marshal(period.getStartDate()));
+                                dos2.writeUTF(localDateAdapter.marshal(period.getFinishDate()));
+                                dos2.writeUTF(period.getDescription());
                                 String title = period.getTitle();
-                                dos.writeUTF(title == null ? "" : title);
-                            }
-                        }
+                                dos2.writeUTF(title == null ? "" : title);
+                            });
+                        });
                         break;
                     default:
                         break;
                 }
-            }
+            });
+        }
+    }
+
+    private interface CustomConsumer<T> {
+        void accept(DataOutputStream dos, T t) throws IOException;
+    }
+
+    private <T> void writeWithExeption(Collection<T> collection,
+                                       DataOutputStream dos,
+                                       CustomConsumer<T> customConsumer) throws IOException {
+        Objects.requireNonNull(customConsumer);
+        dos.writeInt(collection.size());
+        for (T t : collection) {
+            customConsumer.accept(dos, t);
         }
     }
 
@@ -128,7 +131,6 @@ public class DataStreamStrategy implements SerializationStrategy {
                 }
                 resume.setSection(sectionType, section);
             }
-
             return resume;
         }
     }
