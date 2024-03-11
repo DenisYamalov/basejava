@@ -5,7 +5,9 @@ import ru.javawebinar.basejava.util.LocalDateAdapter;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 public class DataStreamStrategy implements SerializationStrategy {
@@ -16,38 +18,37 @@ public class DataStreamStrategy implements SerializationStrategy {
         try (DataOutputStream dos = new DataOutputStream(os)) {
             dos.writeUTF(r.getUuid());
             dos.writeUTF(r.getFullName());
-            writeWithExeption(r.getContacts().entrySet(), dos, (dosT, t) -> {
-                dosT.writeUTF(t.getKey().name());
-                dosT.writeUTF(t.getValue());
+            writeWithException(r.getContacts().entrySet(), dos, (t) -> {
+                dos.writeUTF(t.getKey().name());
+                dos.writeUTF(t.getValue());
             });
 
-            writeWithExeption(r.getSections().entrySet(), dos, (dosT, sectionEntry) -> {
+            writeWithException(r.getSections().entrySet(), dos, (sectionEntry) -> {
                 SectionType sectionType = sectionEntry.getKey();
-                dosT.writeUTF(sectionType.toString());
+                dos.writeUTF(sectionType.toString());
 
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        dosT.writeUTF(((TextSection) sectionEntry.getValue()).getText());
+                        dos.writeUTF(((TextSection) sectionEntry.getValue()).getText());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        writeWithExeption(((ListSection) sectionEntry.getValue()).getList(), dosT,
-                                          (DataOutputStream::writeUTF));
+                        writeWithException(((ListSection) sectionEntry.getValue()).getList(), dos, dos::writeUTF);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        writeWithExeption(((CompanySection) sectionEntry.getValue()).getCompanies(), dosT,
-                                          (dos1, company) -> {
-                            dos1.writeUTF(company.getHomepage().getName());
-                            dos1.writeUTF(company.getHomepage().getUrl());
+                        writeWithException(((CompanySection) sectionEntry.getValue()).getCompanies(), dos,
+                                           (company) -> {
+                            dos.writeUTF(company.getHomepage().getName());
+                            dos.writeUTF(company.getHomepage().getUrl());
 
-                            writeWithExeption(company.getPeriods(), dos1, (dos2, period) -> {
-                                dos2.writeUTF(localDateAdapter.marshal(period.getStartDate()));
-                                dos2.writeUTF(localDateAdapter.marshal(period.getFinishDate()));
-                                dos2.writeUTF(period.getDescription());
+                            writeWithException(company.getPeriods(), dos, (period) -> {
+                                dos.writeUTF(localDateAdapter.marshal(period.getStartDate()));
+                                dos.writeUTF(localDateAdapter.marshal(period.getFinishDate()));
+                                dos.writeUTF(period.getDescription());
                                 String title = period.getTitle();
-                                dos2.writeUTF(title == null ? "" : title);
+                                dos.writeUTF(title == null ? "" : title);
                             });
                         });
                         break;
@@ -58,17 +59,18 @@ public class DataStreamStrategy implements SerializationStrategy {
         }
     }
 
+    @FunctionalInterface
     private interface CustomConsumer<T> {
-        void accept(DataOutputStream dos, T t) throws IOException;
+        void accept(T t) throws IOException;
     }
 
-    private <T> void writeWithExeption(Collection<T> collection,
-                                       DataOutputStream dos,
-                                       CustomConsumer<T> customConsumer) throws IOException {
+    private <T> void writeWithException(Collection<T> collection,
+                                        DataOutputStream dos,
+                                        CustomConsumer<T> customConsumer) throws IOException {
         Objects.requireNonNull(customConsumer);
         dos.writeInt(collection.size());
         for (T t : collection) {
-            customConsumer.accept(dos, t);
+            customConsumer.accept(t);
         }
     }
 
@@ -78,6 +80,7 @@ public class DataStreamStrategy implements SerializationStrategy {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
+
             int contactsSize = dis.readInt();
             for (int i = 0; i < contactsSize; i++) {
                 resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
@@ -94,36 +97,27 @@ public class DataStreamStrategy implements SerializationStrategy {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        int listSectionSize = dis.readInt();
-                        String[] listSectionArray = new String[listSectionSize];
-                        for (int k = 0; k < listSectionSize; k++) {
-                            listSectionArray[k] = dis.readUTF();
-                        }
-                        section = new ListSection(listSectionArray);
+                        Collection<String> listSectionCollection = readWithException(dis, dis::readUTF);
+                        section = new ListSection(new ArrayList<>(listSectionCollection));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        int companiesSize = dis.readInt();
-                        Company[] companies = new Company[companiesSize];
-
-                        for (int m = 0; m < companiesSize; m++) {
+                        Collection<Company> companies = readWithException(dis, () -> {
                             String companyName = dis.readUTF();
                             String website = dis.readUTF();
 
-                            int periodsSize = dis.readInt();
-                            Company.Period[] periods = new Company.Period[periodsSize];
-
-                            for (int n = 0; n < periodsSize; n++) {
+                            Collection<Company.Period> periods = readWithException(dis, () -> {
                                 LocalDate startDate = localDateAdapter.unmarshal(dis.readUTF());
                                 LocalDate finishDate = localDateAdapter.unmarshal(dis.readUTF());
                                 String description = dis.readUTF();
                                 String title = dis.readUTF();
-                                periods[n] = new Company.Period(startDate, finishDate, description, title.isEmpty() ?
-                                        null : title);
-                            }
-                            companies[m] = new Company(companyName, website, periods);
-                        }
-                        section = new CompanySection(companies);
+                                return new Company.Period(startDate, finishDate, description, title.isEmpty() ? null
+                                        : title);
+                            });
+                            return new Company(companyName, website, new HashSet<>(periods));
+                        });
+
+                        section = new CompanySection(new ArrayList<>(companies));
                         break;
                     default:
                         section = null;
@@ -133,5 +127,21 @@ public class DataStreamStrategy implements SerializationStrategy {
             }
             return resume;
         }
+    }
+
+    @FunctionalInterface
+    private interface CustomSupplier<T> {
+        T get() throws IOException;
+    }
+
+    private <T> Collection<T> readWithException(DataInputStream dis,
+                                                CustomSupplier<T> customSupplier) throws IOException {
+        Objects.requireNonNull(customSupplier);
+        int collectionSize = dis.readInt();
+        ArrayList<T> collection = new ArrayList<>(collectionSize);
+        for (int i = 0; i < collectionSize; i++) {
+            collection.add(customSupplier.get());
+        }
+        return collection;
     }
 }
