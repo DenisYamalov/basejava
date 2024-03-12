@@ -35,7 +35,8 @@ public class DataStreamStrategy implements SerializationStrategy {
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        writeWithException(((CompanySection) sectionEntry.getValue()).getCompanies(), dos, (company) -> {
+                        writeWithException(((CompanySection) sectionEntry.getValue()).getCompanies(), dos,
+                                           (company) -> {
                             dos.writeUTF(company.getHomepage().getName());
                             dos.writeUTF(company.getHomepage().getUrl());
 
@@ -60,7 +61,9 @@ public class DataStreamStrategy implements SerializationStrategy {
         void accept(T t) throws IOException;
     }
 
-    private <T> void writeWithException(Collection<T> collection, DataOutputStream dos, CustomConsumer<T> customConsumer) throws IOException {
+    private <T> void writeWithException(Collection<T> collection,
+                                        DataOutputStream dos,
+                                        CustomConsumer<T> customConsumer) throws IOException {
         Objects.requireNonNull(customConsumer);
         dos.writeInt(collection.size());
         for (T t : collection) {
@@ -75,12 +78,9 @@ public class DataStreamStrategy implements SerializationStrategy {
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
 
-            Collection<AbstractMap.SimpleEntry<ContactType, String>> contacts = readWithException(dis,
-                    () -> new AbstractMap.SimpleEntry<>(ContactType.valueOf(dis.readUTF()),
-                            dis.readUTF()));
-            contacts.forEach(entry -> resume.setContact(entry.getKey(), entry.getValue()));
+            readWithException(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
 
-            Collection<AbstractMap.SimpleEntry<SectionType, Section>> sections = readWithException(dis, () -> {
+            readWithException(dis, () -> {
                 Section section;
                 SectionType sectionType = SectionType.valueOf(dis.readUTF());
                 switch (sectionType) {
@@ -90,51 +90,50 @@ public class DataStreamStrategy implements SerializationStrategy {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        Collection<String> listSectionCollection = readWithException(dis, dis::readUTF);
-                        section = new ListSection(new ArrayList<>(listSectionCollection));
+                        List<String> list = new ArrayList<>();
+                        readWithException(dis, () -> list.add(dis.readUTF()));
+                        section = new ListSection(list);
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        Collection<Company> companies = readWithException(dis, () -> {
+                        List<Company> companies = new ArrayList<>();
+                        readWithException(dis, () -> {
                             String companyName = dis.readUTF();
                             String website = dis.readUTF();
 
-                            Collection<Company.Period> periods = readWithException(dis, () -> {
+                            Set<Company.Period> periods = new HashSet<>();
+                            readWithException(dis, () -> {
                                 LocalDate startDate = localDateAdapter.unmarshal(dis.readUTF());
                                 LocalDate finishDate = localDateAdapter.unmarshal(dis.readUTF());
                                 String description = dis.readUTF();
                                 String title = dis.readUTF();
-                                return new Company.Period(startDate, finishDate, description, title.isEmpty() ? null : title);
+                                periods.add(new Company.Period(startDate, finishDate, description, title.isEmpty() ?
+                                        null : title));
                             });
-                            return new Company(companyName, website, new HashSet<>(periods));
+                            companies.add(new Company(companyName, website, periods));
                         });
-
-                        section = new CompanySection(new ArrayList<>(companies));
+                        section = new CompanySection(companies);
                         break;
                     default:
                         section = null;
                         break;
                 }
-                return new AbstractMap.SimpleEntry<>(sectionType, section);
+                resume.setSection(sectionType, section);
             });
-            sections.forEach(entry -> resume.setSection(entry.getKey(), entry.getValue()));
-
             return resume;
         }
     }
 
     @FunctionalInterface
-    private interface CustomSupplier<T> {
-        T get() throws IOException;
+    private interface CustomSupplier {
+        void accept() throws IOException;
     }
 
-    private <T> Collection<T> readWithException(DataInputStream dis, CustomSupplier<T> customSupplier) throws IOException {
+    private void readWithException(DataInputStream dis, CustomSupplier customSupplier) throws IOException {
         Objects.requireNonNull(customSupplier);
-        int collectionSize = dis.readInt();
-        ArrayList<T> collection = new ArrayList<>(collectionSize);
-        for (int i = 0; i < collectionSize; i++) {
-            collection.add(customSupplier.get());
+        int mapSize = dis.readInt();
+        for (int i = 0; i < mapSize; i++) {
+            customSupplier.accept();
         }
-        return collection;
     }
 }
