@@ -5,10 +5,7 @@ import ru.javawebinar.basejava.util.LocalDateAdapter;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 public class DataStreamStrategy implements SerializationStrategy {
     private static final LocalDateAdapter localDateAdapter = new LocalDateAdapter();
@@ -39,18 +36,18 @@ public class DataStreamStrategy implements SerializationStrategy {
                     case EXPERIENCE:
                     case EDUCATION:
                         writeWithException(((CompanySection) sectionEntry.getValue()).getCompanies(), dos,
-                                (company) -> {
-                                    dos.writeUTF(company.getHomepage().getName());
-                                    dos.writeUTF(company.getHomepage().getUrl());
+                                           (company) -> {
+                            dos.writeUTF(company.getHomepage().getName());
+                            dos.writeUTF(company.getHomepage().getUrl());
 
-                                    writeWithException(company.getPeriods(), dos, (period) -> {
-                                        dos.writeUTF(localDateAdapter.marshal(period.getStartDate()));
-                                        dos.writeUTF(localDateAdapter.marshal(period.getFinishDate()));
-                                        dos.writeUTF(period.getDescription());
-                                        String title = period.getTitle();
-                                        dos.writeUTF(title == null ? "" : title);
-                                    });
-                                });
+                            writeWithException(company.getPeriods(), dos, (period) -> {
+                                dos.writeUTF(localDateAdapter.marshal(period.getStartDate()));
+                                dos.writeUTF(localDateAdapter.marshal(period.getFinishDate()));
+                                dos.writeUTF(period.getDescription());
+                                String title = period.getTitle();
+                                dos.writeUTF(title == null ? "" : title);
+                            });
+                        });
                         break;
                     default:
                         break;
@@ -93,24 +90,23 @@ public class DataStreamStrategy implements SerializationStrategy {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        Collection<String> collection = readAndWriteCollectionWithException(dis, new ArrayList<>(), dis::readUTF);
-                        section = new ListSection(new ArrayList<>(collection));
+                        section = new ListSection(new ArrayList<>(readAndWriteCollectionWithException(dis,
+                                                                                                      dis::readUTF)));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        Collection<Company> companies = readAndWriteCollectionWithException(dis, new ArrayList<>(), () -> {
+                        Collection<Company> companies = readAndWriteCollectionWithException(dis, () -> {
                             String companyName = dis.readUTF();
                             String website = dis.readUTF();
 
-                            Collection<Company.Period> periods =
-                                    readAndWriteCollectionWithException(dis, new ArrayList<>(), () -> {
-                                        LocalDate startDate = localDateAdapter.unmarshal(dis.readUTF());
-                                        LocalDate finishDate = localDateAdapter.unmarshal(dis.readUTF());
-                                        String description = dis.readUTF();
-                                        String title = dis.readUTF();
-                                        return new Company.Period(startDate, finishDate, description, title.isEmpty() ?
-                                                null : title);
-                                    });
+                            Collection<Company.Period> periods = readAndWriteCollectionWithException(dis,() -> {
+                                LocalDate startDate = localDateAdapter.unmarshal(dis.readUTF());
+                                LocalDate finishDate = localDateAdapter.unmarshal(dis.readUTF());
+                                String description = dis.readUTF();
+                                String title = dis.readUTF();
+                                return new Company.Period(startDate, finishDate, description, title.isEmpty() ? null
+                                        : title);
+                            });
                             return new Company(companyName, website, new HashSet<>(periods));
                         });
                         section = new CompanySection(new ArrayList<>(companies));
@@ -143,10 +139,11 @@ public class DataStreamStrategy implements SerializationStrategy {
         T accept() throws IOException;
     }
 
-    private <T> Collection<T> readAndWriteCollectionWithException(DataInputStream dis, Collection<T> collection,
+    private <T> Collection<T> readAndWriteCollectionWithException(DataInputStream dis,
                                                                   CustomSupplier2<T> customSupplier) throws IOException {
         Objects.requireNonNull(customSupplier);
         int collectionSize = dis.readInt();
+        final List<T> collection = new ArrayList<>();
         for (int i = 0; i < collectionSize; i++) {
             collection.add(customSupplier.accept());
         }
