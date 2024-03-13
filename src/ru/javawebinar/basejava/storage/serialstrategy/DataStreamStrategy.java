@@ -5,7 +5,10 @@ import ru.javawebinar.basejava.util.LocalDateAdapter;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 
 public class DataStreamStrategy implements SerializationStrategy {
     private static final LocalDateAdapter localDateAdapter = new LocalDateAdapter();
@@ -36,18 +39,18 @@ public class DataStreamStrategy implements SerializationStrategy {
                     case EXPERIENCE:
                     case EDUCATION:
                         writeWithException(((CompanySection) sectionEntry.getValue()).getCompanies(), dos,
-                                           (company) -> {
-                            dos.writeUTF(company.getHomepage().getName());
-                            dos.writeUTF(company.getHomepage().getUrl());
+                                (company) -> {
+                                    dos.writeUTF(company.getHomepage().getName());
+                                    dos.writeUTF(company.getHomepage().getUrl());
 
-                            writeWithException(company.getPeriods(), dos, (period) -> {
-                                dos.writeUTF(localDateAdapter.marshal(period.getStartDate()));
-                                dos.writeUTF(localDateAdapter.marshal(period.getFinishDate()));
-                                dos.writeUTF(period.getDescription());
-                                String title = period.getTitle();
-                                dos.writeUTF(title == null ? "" : title);
-                            });
-                        });
+                                    writeWithException(company.getPeriods(), dos, (period) -> {
+                                        dos.writeUTF(localDateAdapter.marshal(period.getStartDate()));
+                                        dos.writeUTF(localDateAdapter.marshal(period.getFinishDate()));
+                                        dos.writeUTF(period.getDescription());
+                                        String title = period.getTitle();
+                                        dos.writeUTF(title == null ? "" : title);
+                                    });
+                                });
                         break;
                     default:
                         break;
@@ -90,29 +93,27 @@ public class DataStreamStrategy implements SerializationStrategy {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        List<String> list = new ArrayList<>();
-                        readWithException(dis, () -> list.add(dis.readUTF()));
-                        section = new ListSection(list);
+                        Collection<String> collection = readAndWriteCollectionWithException(dis, new ArrayList<>(), dis::readUTF);
+                        section = new ListSection(new ArrayList<>(collection));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        List<Company> companies = new ArrayList<>();
-                        readWithException(dis, () -> {
+                        Collection<Company> companies = readAndWriteCollectionWithException(dis, new ArrayList<>(), () -> {
                             String companyName = dis.readUTF();
                             String website = dis.readUTF();
 
-                            Set<Company.Period> periods = new HashSet<>();
-                            readWithException(dis, () -> {
-                                LocalDate startDate = localDateAdapter.unmarshal(dis.readUTF());
-                                LocalDate finishDate = localDateAdapter.unmarshal(dis.readUTF());
-                                String description = dis.readUTF();
-                                String title = dis.readUTF();
-                                periods.add(new Company.Period(startDate, finishDate, description, title.isEmpty() ?
-                                        null : title));
-                            });
-                            companies.add(new Company(companyName, website, periods));
+                            Collection<Company.Period> periods =
+                                    readAndWriteCollectionWithException(dis, new ArrayList<>(), () -> {
+                                        LocalDate startDate = localDateAdapter.unmarshal(dis.readUTF());
+                                        LocalDate finishDate = localDateAdapter.unmarshal(dis.readUTF());
+                                        String description = dis.readUTF();
+                                        String title = dis.readUTF();
+                                        return new Company.Period(startDate, finishDate, description, title.isEmpty() ?
+                                                null : title);
+                                    });
+                            return new Company(companyName, website, new HashSet<>(periods));
                         });
-                        section = new CompanySection(companies);
+                        section = new CompanySection(new ArrayList<>(companies));
                         break;
                     default:
                         section = null;
@@ -135,5 +136,20 @@ public class DataStreamStrategy implements SerializationStrategy {
         for (int i = 0; i < mapSize; i++) {
             customSupplier.accept();
         }
+    }
+
+    @FunctionalInterface
+    private interface CustomSupplier2<T> {
+        T accept() throws IOException;
+    }
+
+    private <T> Collection<T> readAndWriteCollectionWithException(DataInputStream dis, Collection<T> collection,
+                                                                  CustomSupplier2<T> customSupplier) throws IOException {
+        Objects.requireNonNull(customSupplier);
+        int collectionSize = dis.readInt();
+        for (int i = 0; i < collectionSize; i++) {
+            collection.add(customSupplier.accept());
+        }
+        return collection;
     }
 }
