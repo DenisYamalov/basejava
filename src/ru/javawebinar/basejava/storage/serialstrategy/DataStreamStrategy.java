@@ -122,25 +122,25 @@ public class DataStreamStrategy implements SerializationStrategy {
     }
 
     @FunctionalInterface
-    private interface CustomSupplier {
+    private interface CustomWriter {
         void accept() throws IOException;
     }
 
-    private void readWithException(DataInputStream dis, CustomSupplier customSupplier) throws IOException {
-        Objects.requireNonNull(customSupplier);
+    private void readWithException(DataInputStream dis, CustomWriter customWriter) throws IOException {
+        Objects.requireNonNull(customWriter);
         int mapSize = dis.readInt();
         for (int i = 0; i < mapSize; i++) {
-            customSupplier.accept();
+            customWriter.accept();
         }
     }
 
     @FunctionalInterface
-    private interface CustomSupplier2<T> {
+    private interface CustomSupplier<T> {
         T accept() throws IOException;
     }
 
     private <T> Collection<T> readAndWriteCollectionWithException(DataInputStream dis,
-                                                                  CustomSupplier2<T> customSupplier) throws IOException {
+                                                                  CustomSupplier<T> customSupplier) throws IOException {
         Objects.requireNonNull(customSupplier);
         int collectionSize = dis.readInt();
         final List<T> collection = new ArrayList<>();
