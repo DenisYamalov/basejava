@@ -123,14 +123,14 @@ public class ResumeTestData {
 
     private static void addExperience(Resume resume) {
         List<Company> companies = new ArrayList<>();
-        Set<Company.Period> periods = new TreeSet<>();
+        List<Company.Period> periods = new ArrayList<>();
 
         periods.add(new Company.Period(DateUtil.of(2013, Month.OCTOBER), LocalDate.now(), "Создание, организация и " +
                 "проведение Java онлайн проектов и стажировок.", "Автор проекта."));
         Company company1 = new Company("Java Online Projects", "http://javaops.ru/", periods);
 
 
-        Set<Company.Period> periods2 = new TreeSet<>();
+        List<Company.Period> periods2 = new ArrayList<>();
         periods2.add(new Company.Period(DateUtil.of(2014, Month.OCTOBER),
                                         DateUtil.of(2016, Month.JANUARY),
                                         "Проектирование и разработка онлайн платформы управления проектами " +
@@ -149,13 +149,13 @@ public class ResumeTestData {
 
     private static void addEducation(Resume resume) {
         List<Company> companies = new ArrayList<>();
-        Set<Company.Period> periods = new TreeSet<>();
+        List<Company.Period> periods = new ArrayList<>();
 
         periods.add(new Company.Period(DateUtil.of(2013, Month.MARCH), DateUtil.of(2013, Month.APRIL),
                                        "'Functional " + "Programming Principles in Scala' by Martin Odersky"));
         Company company1 = new Company("Coursera", "https://www.coursera.org/course/progfun.html?ID=22366", periods);
 
-        Set<Company.Period> periods2 = new TreeSet<>();
+        List<Company.Period> periods2 = new ArrayList<>();
 
         periods2.add(new Company.Period(DateUtil.of(2011, Month.MARCH),
                                         DateUtil.of(2011, Month.APRIL), "Курс " +

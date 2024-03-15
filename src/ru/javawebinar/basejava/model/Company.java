@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,30 +17,30 @@ import java.util.stream.Collectors;
 public class Company implements Serializable {
     private static final long serialVersionUID = 4814339807787759827L;
     private Link homepage;
-    private Set<Period> periods;
+    private List<Period> periods;
 
     public Company() {
     }
 
-    public Company(Link homepage, Set<Period> periods) {
+    public Company(Link homepage, List<Period> periods) {
         this.homepage = homepage;
         this.periods = periods;
     }
 
-    public Company(String companyName, String website, Set<Period> periods) {
+    public Company(String companyName, String website, List<Period> periods) {
         this.homepage = new Link(companyName, website);
         this.periods = periods;
     }
 
     public Company(String companyName, String website, Period... periods) {
-        this(new Link(companyName, website), Arrays.stream(periods).collect(Collectors.toSet()));
+        this(new Link(companyName, website), Arrays.stream(periods).collect(Collectors.toList()));
     }
 
     public Link getHomepage() {
         return homepage;
     }
 
-    public Set<Period> getPeriods() {
+    public List<Period> getPeriods() {
         return periods;
     }
 
