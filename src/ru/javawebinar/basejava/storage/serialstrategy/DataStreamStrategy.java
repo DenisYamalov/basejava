@@ -5,7 +5,10 @@ import ru.javawebinar.basejava.util.LocalDateAdapter;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class DataStreamStrategy implements SerializationStrategy {
     private static final LocalDateAdapter localDateAdapter = new LocalDateAdapter();
@@ -90,16 +93,15 @@ public class DataStreamStrategy implements SerializationStrategy {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        section = new ListSection(new ArrayList<>(readAndWriteCollectionWithException(dis,
-                                                                                                      dis::readUTF)));
+                        section = new ListSection(readAndWriteCollectionWithException(dis, dis::readUTF));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        Collection<Company> companies = readAndWriteCollectionWithException(dis, () -> {
+                        List<Company> companies = readAndWriteCollectionWithException(dis, () -> {
                             String companyName = dis.readUTF();
                             String website = dis.readUTF();
 
-                            Collection<Company.Period> periods = readAndWriteCollectionWithException(dis,() -> {
+                            List<Company.Period> periods = readAndWriteCollectionWithException(dis, () -> {
                                 LocalDate startDate = localDateAdapter.unmarshal(dis.readUTF());
                                 LocalDate finishDate = localDateAdapter.unmarshal(dis.readUTF());
                                 String description = dis.readUTF();
@@ -107,9 +109,9 @@ public class DataStreamStrategy implements SerializationStrategy {
                                 return new Company.Period(startDate, finishDate, description, title.isEmpty() ? null
                                         : title);
                             });
-                            return new Company(companyName, website, new HashSet<>(periods));
+                            return new Company(companyName, website, periods);
                         });
-                        section = new CompanySection(new ArrayList<>(companies));
+                        section = new CompanySection(companies);
                         break;
                     default:
                         section = null;
@@ -139,8 +141,8 @@ public class DataStreamStrategy implements SerializationStrategy {
         T accept() throws IOException;
     }
 
-    private <T> Collection<T> readAndWriteCollectionWithException(DataInputStream dis,
-                                                                  CustomSupplier<T> customSupplier) throws IOException {
+    private <T> List<T> readAndWriteCollectionWithException(DataInputStream dis,
+                                                            CustomSupplier<T> customSupplier) throws IOException {
         Objects.requireNonNull(customSupplier);
         int collectionSize = dis.readInt();
         final List<T> collection = new ArrayList<>();
