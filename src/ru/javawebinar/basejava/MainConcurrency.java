@@ -1,3 +1,5 @@
+package ru.javawebinar.basejava;
+
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.*;
@@ -109,7 +111,7 @@ public class MainConcurrency {
 
     private void inc() {
 //        synchronized (this) {
-//        synchronized (MainConcurrency.class) {
+//        synchronized (ru.javawebinar.basejava.MainConcurrency.class) {
 //        WRITE_LOCK.lock();
 //        try {
         atomicCounter.incrementAndGet();
