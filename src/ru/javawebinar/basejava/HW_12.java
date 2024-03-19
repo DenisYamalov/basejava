@@ -3,6 +3,7 @@ package ru.javawebinar.basejava;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class HW_12 {
@@ -18,21 +19,18 @@ public class HW_12 {
     }
 
     private static int minValue(int[] values) {
-        final int[] counter = new int[1];
-        counter[0] = 1;
         return Arrays.stream(values)
                 .distinct()
                 .boxed()
-                .sorted(Collections.reverseOrder())
-                .map(x -> x * counter[0])
-                .peek(x -> counter[0] = counter[0] * 10)
-                .reduce(Integer::sum).orElse(0);
+                .sorted()
+                .reduce(0,(integer, integer2) -> integer * 10 + integer2);
     }
+
 
     private static List<Integer> oddOrEven(List<Integer> integers) {
         return integers.stream()
-                .collect((Collectors.collectingAndThen(Collectors
-                                .partitioningBy(t -> t % 2 == 0),
+                .collect((Collectors.collectingAndThen(
+                        Collectors.partitioningBy(t -> t % 2 == 0),
                         booleanListMap -> booleanListMap.get(false).size() % 2 == 0
                                 ? booleanListMap.get(false)
                                 : booleanListMap.get(true))));
