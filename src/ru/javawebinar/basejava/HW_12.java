@@ -32,7 +32,7 @@ public class HW_12 {
     private static List<Integer> oddOrEven(List<Integer> integers) {
         return integers.stream()
                 .collect((Collectors.collectingAndThen(Collectors
-                                .groupingBy(t -> t % 2 == 0),
+                                .partitioningBy(t -> t % 2 == 0),
                         booleanListMap -> booleanListMap.get(false).size() % 2 == 0
                                 ? booleanListMap.get(false)
                                 : booleanListMap.get(true))));
