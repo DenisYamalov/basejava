@@ -21,7 +21,6 @@ public class HW_12 {
     private static int minValue(int[] values) {
         return Arrays.stream(values)
                 .distinct()
-                .boxed()
                 .sorted()
                 .reduce(0,(integer, integer2) -> integer * 10 + integer2);
     }
