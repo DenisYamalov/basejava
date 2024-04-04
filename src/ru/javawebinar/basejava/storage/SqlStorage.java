@@ -1,10 +1,9 @@
 package ru.javawebinar.basejava.storage;
 
 
-import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.util.SqlHelper;
+import ru.javawebinar.basejava.storage.dbstrategy.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,9 +27,7 @@ public class SqlStorage implements Storage {
         sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?,?)", ps -> {
             ps.setString(1, r.getUuid());
             ps.setString(2, r.getFullName());
-            if (!ps.execute()) {
-                throw new ExistStorageException(r.getUuid());
-            }
+            ps.execute();
             return null;
         });
     }
@@ -51,7 +48,8 @@ public class SqlStorage implements Storage {
     public void delete(String uuid) {
         sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", ps -> {
             ps.setString(1, uuid);
-            if (!ps.execute()) {
+            int executed = ps.executeUpdate();
+            if (executed == 0) {
                 throw new NotExistStorageException(uuid);
             }
             return null;
@@ -74,6 +72,7 @@ public class SqlStorage implements Storage {
     public int size() {
         return sqlHelper.execute("SELECT COUNT(*) AS count FROM resume", ps -> {
             ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
             return resultSet.getInt("count");
         });
     }
@@ -83,7 +82,8 @@ public class SqlStorage implements Storage {
         sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
             ps.setString(1, resume.getFullName());
             ps.setString(2, resume.getUuid());
-            if (ps.execute()) {
+            int executed = ps.executeUpdate();
+            if (executed == 0) {
                 throw new NotExistStorageException(resume.getUuid());
             }
             return null;

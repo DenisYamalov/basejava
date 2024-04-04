@@ -3,7 +3,6 @@ package ru.javawebinar.basejava.storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.javawebinar.basejava.Config;
-import ru.javawebinar.basejava.ResumeTestData;
 import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
@@ -70,7 +69,7 @@ public abstract class AbstractStorageTest {
     @Test
     void delete() {
         storage.delete(UUID_1);
-        List<Resume>resumeList = storage.getAllSorted();
+        List<Resume> resumeList = storage.getAllSorted();
         assertFalse(resumeList.contains(RESUME1));
         assertSize(INITIAL_SIZE - 1);
         assertThrowsNotExist(UUID_1);
@@ -84,7 +83,7 @@ public abstract class AbstractStorageTest {
     @Test
     void getAll() {
         Resume[] resumes = {RESUME1, RESUME2, RESUME3};
-        Arrays.sort(resumes,Storage.RESUME_COMPARATOR);
+        Arrays.sort(resumes, Storage.RESUME_COMPARATOR);
         Resume[] testingArray = storage.getAllSorted().toArray(Resume[]::new);
         assertArrayEquals(resumes, testingArray);
     }
@@ -103,7 +102,8 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void updateNotExist() {
-        assertThrows(NotExistStorageException.class, () -> storage.update(ResumeTestData.fulfillResume(UUID_NOT_EXIST, "")));
+        assertThrows(NotExistStorageException.class, () -> storage.update(ResumeTestData.fulfillResume(UUID_NOT_EXIST
+                , "")));
     }
 
     @Test

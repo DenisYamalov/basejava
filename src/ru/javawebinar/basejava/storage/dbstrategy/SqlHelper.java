@@ -1,6 +1,6 @@
-package ru.javawebinar.basejava.util;
+package ru.javawebinar.basejava.storage.dbstrategy;
 
-import ru.javawebinar.basejava.exception.StorageException;
+import ru.javawebinar.basejava.exception.ExistStorageException;
 import ru.javawebinar.basejava.sql.ConnectionFactory;
 
 import java.sql.Connection;
@@ -15,12 +15,12 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    public <T> T execute (String sql, ABlockOfCode<T> blockOfCode){
+    public <T> T execute(String sql, DBStrategy<T> dbStrategy) {
         try (Connection connection = connectionFactory.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(sql);
-            return blockOfCode.execute(ps);
+            return dbStrategy.execute(ps);
         } catch (SQLException e) {
-            throw new StorageException(e);
+            throw new ExistStorageException(e);
         }
     }
 }

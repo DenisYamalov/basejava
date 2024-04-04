@@ -4,4 +4,8 @@ public class ExistStorageException extends StorageException {
     public ExistStorageException(String uuid) {
         super("Resume uuid = " + uuid + " exists", uuid);
     }
+
+    public ExistStorageException(Exception e) {
+        super(e);
+    }
 }

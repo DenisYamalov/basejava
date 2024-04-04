@@ -1,4 +1,4 @@
-package ru.javawebinar.basejava;
+package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.util.DateUtil;
@@ -7,8 +7,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 public class ResumeTestData {
@@ -32,12 +30,12 @@ public class ResumeTestData {
     }
     public static Resume fulfillResume (String uuid, String fullName){
         Resume resume = new Resume(uuid,fullName);
-        addContacts(resume);
-        addTextSections(resume);
-        addAchievements(resume);
-        addQualifications(resume);
-        addExperience(resume);
-        addEducation(resume);
+//        addContacts(resume);
+//        addTextSections(resume);
+//        addAchievements(resume);
+//        addQualifications(resume);
+//        addExperience(resume);
+//        addEducation(resume);
         return resume;
     }
     private static void addContacts(Resume resume) {

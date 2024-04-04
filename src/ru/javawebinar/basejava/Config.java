@@ -25,7 +25,7 @@ public class Config {
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
             dbURL = props.getProperty("db.url");
-            dbUser = props.getProperty("ds.user");
+            dbUser = props.getProperty("db.user");
             dbPassword = props.getProperty("db.password");
         } catch (IOException e) {
             throw new IllegalStateException("Invalid config file " + PROPS.getAbsolutePath());
