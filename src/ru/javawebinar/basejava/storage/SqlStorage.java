@@ -8,6 +8,7 @@ import ru.javawebinar.basejava.util.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SqlStorage implements Storage {
@@ -27,7 +28,7 @@ public class SqlStorage implements Storage {
         sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?,?)", ps -> {
             ps.setString(1, r.getUuid());
             ps.setString(2, r.getFullName());
-            if (!ps.execute()){
+            if (!ps.execute()) {
                 throw new ExistStorageException(r.getUuid());
             }
             return null;
@@ -50,7 +51,7 @@ public class SqlStorage implements Storage {
     public void delete(String uuid) {
         sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", ps -> {
             ps.setString(1, uuid);
-            if (!ps.execute()){
+            if (!ps.execute()) {
                 throw new NotExistStorageException(uuid);
             }
             return null;
@@ -59,13 +60,13 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        //TODO finish method
-        return sqlHelper.execute("SELECT * FROM resume ORDER BY full_name",ps -> {
+        return sqlHelper.execute("SELECT * FROM resume ORDER BY full_name", ps -> {
             ResultSet resultSet = ps.executeQuery();
-            if (!resultSet.next()) {
-                throw new NotExistStorageException(uuid);
+            ArrayList<Resume> resumes = new ArrayList<>();
+            while (resultSet.next()) {
+                resumes.add(new Resume(resultSet.getString("uuid"), resultSet.getString("full_name")));
             }
-            return new Resume(uuid, resultSet.getString("full_name"));
+            return resumes;
         });
     }
 
@@ -79,6 +80,13 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-
+        sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
+            ps.setString(1, resume.getFullName());
+            ps.setString(2, resume.getUuid());
+            if (ps.execute()) {
+                throw new NotExistStorageException(resume.getUuid());
+            }
+            return null;
+        });
     }
 }
