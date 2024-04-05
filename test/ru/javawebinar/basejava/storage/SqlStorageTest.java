@@ -5,6 +5,6 @@ import ru.javawebinar.basejava.storage.serialstrategy.XmlStreamSrategy;
 
 class SqlStorageTest extends AbstractStorageTest {
     public SqlStorageTest() {
-        super(new SqlStorage(Config.get().getDbURL(), Config.get().getDbUser(), Config.get().getDbPassword()));
+        super(Config.get().getStorage());
     }
 }

@@ -1,6 +1,7 @@
 package ru.javawebinar.basejava.storage.dbstrategy;
 
 import ru.javawebinar.basejava.exception.ExistStorageException;
+import ru.javawebinar.basejava.exception.StorageException;
 import ru.javawebinar.basejava.sql.ConnectionFactory;
 
 import java.sql.Connection;
@@ -20,7 +21,10 @@ public class SqlHelper {
             PreparedStatement ps = connection.prepareStatement(sql);
             return dbStrategy.execute(ps);
         } catch (SQLException e) {
-            throw new ExistStorageException(e);
+            if (e.getSQLState().startsWith("23")){
+                throw new ExistStorageException(e);
+            }
+            throw new StorageException(e);
         }
     }
 }
