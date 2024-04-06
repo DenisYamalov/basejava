@@ -10,6 +10,7 @@ import ru.javawebinar.basejava.model.Resume;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,10 +18,10 @@ public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
     protected static final int INITIAL_SIZE = 3;
     protected final Storage storage;
-    protected static final String UUID_1 = "uuid1";
-    protected static final String UUID_2 = "uuid2";
-    protected static final String UUID_3 = "uuid3";
-    protected static final String UUID_4 = "uuid4";
+    protected static final String UUID_1 = UUID.randomUUID().toString();
+    protected static final String UUID_2 = UUID.randomUUID().toString();
+    protected static final String UUID_3 = UUID.randomUUID().toString();
+    protected static final String UUID_4 = UUID.randomUUID().toString();
     protected static final String UUID_NOT_EXIST = "dummy";
     protected static final Resume RESUME1 = ResumeTestData.fulfillResume(UUID_1, "Mike Mires");
     protected static final Resume RESUME2 = ResumeTestData.fulfillResume(UUID_2, "Annie Goodman");

@@ -3,7 +3,7 @@ package ru.javawebinar.basejava.storage;
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.storage.dbstrategy.SqlHelper;
+import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,8 +48,7 @@ public class SqlStorage implements Storage {
     public void delete(String uuid) {
         sqlHelper.execute("DELETE FROM resume WHERE uuid = ?", ps -> {
             ps.setString(1, uuid);
-            int executed = ps.executeUpdate();
-            if (executed == 0) {
+            if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(uuid);
             }
             return null;
@@ -58,9 +57,9 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.execute("SELECT * FROM resume ORDER BY full_name", ps -> {
+        return sqlHelper.execute("SELECT * FROM resume ORDER BY full_name, uuid", ps -> {
             ResultSet resultSet = ps.executeQuery();
-            ArrayList<Resume> resumes = new ArrayList<>();
+            List<Resume> resumes = new ArrayList<>();
             while (resultSet.next()) {
                 resumes.add(new Resume(resultSet.getString("uuid"), resultSet.getString("full_name")));
             }
@@ -82,8 +81,7 @@ public class SqlStorage implements Storage {
         sqlHelper.execute("UPDATE resume SET full_name = ? WHERE uuid = ?", ps -> {
             ps.setString(1, resume.getFullName());
             ps.setString(2, resume.getUuid());
-            int executed = ps.executeUpdate();
-            if (executed == 0) {
+            if (ps.executeUpdate() == 0) {
                 throw new NotExistStorageException(resume.getUuid());
             }
             return null;
