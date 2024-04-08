@@ -30,7 +30,7 @@ public class ResumeTestData {
     }
     public static Resume fulfillResume (String uuid, String fullName){
         Resume resume = new Resume(uuid,fullName);
-//        addContacts(resume);
+        addContacts(resume);
 //        addTextSections(resume);
 //        addAchievements(resume);
 //        addQualifications(resume);

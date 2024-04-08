@@ -1,12 +1,15 @@
 package ru.javawebinar.basejava.sql;
 
 import ru.javawebinar.basejava.exception.StorageException;
+import ru.javawebinar.basejava.model.ContactType;
+import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.storage.dbstrategy.SqlExecutor;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 
 public class SqlHelper {
     private final ConnectionFactory connectionFactory;
@@ -37,6 +40,24 @@ public class SqlHelper {
             }
         } catch (SQLException e) {
             throw new StorageException(e);
+        }
+    }
+
+    public <T> void executeAndClose(String sql, SqlExecutor<T> executor, Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            executor.execute(ps);
+        }
+    }
+
+    public <T> void executeBatch(Resume r,
+                                 String batchSQL,
+                                 SqlExecutor<T> batchExecutor,
+                                 Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(batchSQL)) {
+            for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
+                batchExecutor.execute(ps);
+            }
+            ps.executeBatch();
         }
     }
 }
