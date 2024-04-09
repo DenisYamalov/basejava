@@ -1,4 +1,4 @@
-package ru.javawebinar.basejava.sql;
+package ru.javawebinar.basejava.storage.dbstrategy;
 
 import java.sql.Connection;
 import java.sql.SQLException;

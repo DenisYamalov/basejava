@@ -5,9 +5,11 @@ import ru.javawebinar.basejava.exception.NotExistStorageException;
 import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.sql.SqlHelper;
+import ru.javawebinar.basejava.storage.dbstrategy.BatchSqlExecutor;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,24 +29,22 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume r) {
-        sqlHelper.transactionalExecute(conn -> {
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)")) {
-                ps.setString(1, r.getUuid());
-                ps.setString(2, r.getFullName());
-                ps.execute();
-            }
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) " +
-                                                                      "VALUES (?,?,?)")) {
-                for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
-                    ps.setString(1, r.getUuid());
-                    ps.setString(2, e.getKey().name());
-                    ps.setString(3, e.getValue());
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            }
-            return null;
-        });
+        sqlHelper.transactionalExecute(conn ->
+                  sqlHelper.transactionAndBatchExecute(conn, r, "INSERT INTO resume (uuid, full_name) VALUES (?,?)",
+                                           ps -> {
+                                               ps.setString(1, r.getUuid());
+                                               ps.setString(2, r.getFullName());
+                                               ps.execute();
+                                               return null;
+                                           }, "INSERT INTO contact (resume_uuid, type, value) " +
+                                                   "VALUES (?,?,?)",
+                                           ps -> butchExecute(ps, r,
+                                                 (ps1, contactType, contact) -> {
+                                                     ps1.setString(1, r.getUuid());
+                                                     ps1.setString(2, contactType.name());
+                                                     ps1.setString(3, contact);
+                                                 })
+                                           ));
     }
 
     @Override
@@ -80,27 +80,30 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        return sqlHelper.transactionalExecute(conn -> {
-            Map<String, Resume> resumes = new LinkedHashMap<>();
-
-            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
-                ResultSet resultSet = ps.executeQuery();
-                while (resultSet.next()) {
-                    Resume r = new Resume(resultSet.getString("uuid"), resultSet.getString("full_name"));
-                    resumes.put(r.getUuid(), r);
-                }
-                ps.execute();
-            }
-
-            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact")) {
-                ResultSet resultSet = ps.executeQuery();
-                while (resultSet.next()) {
-                    Resume r = resumes.get(resultSet.getString("resume_uuid"));
-                    r.setContact(ContactType.valueOf(resultSet.getString("type")), resultSet.getString("value"));
-                }
-            }
-            return new ArrayList<>(resumes.values());
-        });
+        Map<String, Resume> resumes = new LinkedHashMap<>();
+        return sqlHelper.transactionalExecute(conn ->
+                sqlHelper.transactionAndBatchExecute(conn, null,
+                                      "SELECT * FROM resume ORDER BY full_name, uuid",
+                                      ps -> {
+                                          ResultSet resultSet = ps.executeQuery();
+                                          while (resultSet.next()) {
+                                              Resume r = new Resume(resultSet.getString("uuid"),
+                                                                    resultSet.getString("full_name"));
+                                              resumes.put(r.getUuid(), r);
+                                          }
+                                          ps.execute();
+                                          return null;
+                                      }, "SELECT * FROM contact",
+                                      ps -> {
+                                          ResultSet resultSet = ps.executeQuery();
+                                          while (resultSet.next()) {
+                                              Resume r = resumes.get(resultSet.getString("resume_uuid"));
+                                              r.setContact(ContactType.valueOf(resultSet.getString("type")),
+                                                           resultSet.getString("value"));
+                                          }
+                                          return new ArrayList<>(resumes.values());
+                                      }
+                                      ));
     }
 
     @Override
@@ -114,44 +117,31 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        sqlHelper.transactionalExecute(conn -> {
-            return sqlHelper.transactionAndBatchExecute(conn,resume,"UPDATE resume SET full_name = ? WHERE uuid = ?",
-                    ps -> {
-                        ps.setString(1, resume.getFullName());
-                        ps.setString(2, resume.getUuid());
-                        if (ps.executeUpdate() == 0) {
-                            throw new NotExistStorageException(resume.getUuid());
-                        }
-                        return null;
-                    }, "UPDATE contact SET value = ? WHERE resume_uuid = ? AND type = ?",
-                    ps -> {
-                        ps.setString(1, e.getValue());
-                        ps.setString(2, resume.getUuid());
-                        ps.setString(3, e.getKey().name());
-                        ps.addBatch();
-                        return null;
-                    });
-        });
-//        sqlHelper.transactionalExecute(conn -> {
-//            try (PreparedStatement ps = conn.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid = ?")){
-//                ps.setString(1, resume.getFullName());
-//                ps.setString(2, resume.getUuid());
-//                if (ps.executeUpdate() == 0) {
-//                    throw new NotExistStorageException(resume.getUuid());
-//                }
-//            }
-//            try (PreparedStatement ps = conn.prepareStatement("UPDATE contact SET value = ? " +
-//                                                                      "WHERE resume_uuid = ? AND type = ?")) {
-//                for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
-//
-//                    ps.setString(1, e.getValue());
-//                    ps.setString(2, resume.getUuid());
-//                    ps.setString(3, e.getKey().name());
-//                    ps.addBatch();
-//                }
-//                ps.executeBatch();
-//            }
-//           return null;
-//        });
+        sqlHelper.transactionalExecute(conn ->
+                  sqlHelper.transactionAndBatchExecute(conn, resume, "UPDATE resume SET full_name = ? WHERE uuid = ?",
+                                        ps -> {
+                                            ps.setString(1, resume.getFullName());
+                                            ps.setString(2, resume.getUuid());
+                                            if (ps.executeUpdate() == 0) {
+                                                throw new NotExistStorageException(resume.getUuid());
+                                            }
+                                            return null;
+                                        }, "UPDATE contact SET value = ? " +
+                                                "WHERE resume_uuid = ? AND type = ?",
+                                           ps -> butchExecute(ps, resume, (ps1, contactType, contact) -> {
+                                               ps1.setString(1, contact);
+                                               ps1.setString(2, resume.getUuid());
+                                               ps1.setString(3, contactType.name());
+                                           })
+                                        ));
+    }
+
+    private <T> T butchExecute (PreparedStatement ps, Resume r, BatchSqlExecutor<T> batchExecutor) throws SQLException {
+        for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
+            batchExecutor.execute(ps, e.getKey(), e.getValue());
+            ps.addBatch();
+        }
+        ps.executeBatch();
+        return null;
     }
 }
