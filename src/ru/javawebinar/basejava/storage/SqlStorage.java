@@ -115,25 +115,43 @@ public class SqlStorage implements Storage {
     @Override
     public void update(Resume resume) {
         sqlHelper.transactionalExecute(conn -> {
-            try (PreparedStatement ps = conn.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid = ?")){
-                ps.setString(1, resume.getFullName());
-                ps.setString(2, resume.getUuid());
-                if (ps.executeUpdate() == 0) {
-                    throw new NotExistStorageException(resume.getUuid());
-                }
-            }
-            try (PreparedStatement ps = conn.prepareStatement("UPDATE contact SET value = ? " +
-                                                                      "WHERE resume_uuid = ? AND type = ?")) {
-                for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
-
-                    ps.setString(1, e.getValue());
-                    ps.setString(2, resume.getUuid());
-                    ps.setString(3, e.getKey().name());
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            }
-           return null;
+            return sqlHelper.transactionAndBatchExecute(conn,resume,"UPDATE resume SET full_name = ? WHERE uuid = ?",
+                    ps -> {
+                        ps.setString(1, resume.getFullName());
+                        ps.setString(2, resume.getUuid());
+                        if (ps.executeUpdate() == 0) {
+                            throw new NotExistStorageException(resume.getUuid());
+                        }
+                        return null;
+                    }, "UPDATE contact SET value = ? WHERE resume_uuid = ? AND type = ?",
+                    ps -> {
+                        ps.setString(1, e.getValue());
+                        ps.setString(2, resume.getUuid());
+                        ps.setString(3, e.getKey().name());
+                        ps.addBatch();
+                        return null;
+                    });
         });
+//        sqlHelper.transactionalExecute(conn -> {
+//            try (PreparedStatement ps = conn.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid = ?")){
+//                ps.setString(1, resume.getFullName());
+//                ps.setString(2, resume.getUuid());
+//                if (ps.executeUpdate() == 0) {
+//                    throw new NotExistStorageException(resume.getUuid());
+//                }
+//            }
+//            try (PreparedStatement ps = conn.prepareStatement("UPDATE contact SET value = ? " +
+//                                                                      "WHERE resume_uuid = ? AND type = ?")) {
+//                for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
+//
+//                    ps.setString(1, e.getValue());
+//                    ps.setString(2, resume.getUuid());
+//                    ps.setString(3, e.getKey().name());
+//                    ps.addBatch();
+//                }
+//                ps.executeBatch();
+//            }
+//           return null;
+//        });
     }
 }

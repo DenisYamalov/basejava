@@ -43,6 +43,20 @@ public class SqlHelper {
         }
     }
 
+    public <T> T transactionAndBatchExecute (Connection conn, Resume r, String sql, SqlExecutor<T> executor, String batchSQL, SqlExecutor<T> batchExecutor) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            executor.execute(ps);
+        }
+        try (PreparedStatement ps = conn.prepareStatement(batchSQL)) {
+            for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
+                batchExecutor.execute(ps);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+        return null;
+    }
+
     public <T> void executeAndClose(String sql, SqlExecutor<T> executor, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             executor.execute(ps);
