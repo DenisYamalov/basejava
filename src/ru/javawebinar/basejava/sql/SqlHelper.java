@@ -1,7 +1,6 @@
 package ru.javawebinar.basejava.sql;
 
 import ru.javawebinar.basejava.exception.StorageException;
-import ru.javawebinar.basejava.model.Resume;
 import ru.javawebinar.basejava.storage.dbstrategy.SqlExecutor;
 import ru.javawebinar.basejava.storage.dbstrategy.SqlTransaction;
 
@@ -39,20 +38,6 @@ public class SqlHelper {
             }
         } catch (SQLException e) {
             throw new StorageException(e);
-        }
-    }
-
-    public <T> T transactionAndBatchExecute(Connection conn,
-                                            Resume r,
-                                            String sql,
-                                            SqlExecutor<T> executor,
-                                            String batchSQL,
-                                            SqlExecutor<T> batchExecutor) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            executor.execute(ps);
-        }
-        try (PreparedStatement ps = conn.prepareStatement(batchSQL)) {
-            return batchExecutor.execute(ps);
         }
     }
 }
