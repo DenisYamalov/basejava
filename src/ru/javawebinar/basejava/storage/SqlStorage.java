@@ -32,7 +32,7 @@ public class SqlStorage implements Storage {
                 ps.execute();
             }
             try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) " +
-                    "VALUES (?,?,?)")) {
+                                                                      "VALUES (?,?,?)")) {
                 for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
                     ps.setString(1, r.getUuid());
                     ps.setString(2, e.getKey().name());
@@ -48,8 +48,8 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         return sqlHelper.execute("SELECT * FROM resume r " +
-                "LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
-                "WHERE r.uuid = ?", ps -> {
+                                         "LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
+                                         "WHERE r.uuid = ?", ps -> {
             ps.setString(1, uuid);
             ResultSet resultSet = ps.executeQuery();
             if (!resultSet.next()) {
@@ -134,12 +134,13 @@ public class SqlStorage implements Storage {
 
             //remove obsolete contacts
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact " +
-                    "WHERE resume_uuid = ?")) {
+                                                                      "WHERE resume_uuid = ?")) {
+                ps.setString(1, resume.getUuid());
                 ps.executeUpdate();
             }
             //add new contacts
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES " +
-                    "(?,?,?)")) {
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value)" +
+                                                                      "VALUES (?,?,?)")) {
                 for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
                     ps.setString(1, resume.getUuid());
                     ps.setString(2, e.getKey().name());
