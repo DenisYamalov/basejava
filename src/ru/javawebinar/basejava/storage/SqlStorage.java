@@ -92,10 +92,6 @@ public class SqlStorage implements Storage {
         });
     }
 
-    private void addContact(Resume r, ResultSet rs) throws SQLException {
-        r.setContact(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
-    }
-
     @Override
     public int size() {
         return sqlHelper.execute("SELECT COUNT(*) AS count FROM resume", ps -> {
@@ -120,7 +116,7 @@ public class SqlStorage implements Storage {
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact " +
                     "WHERE resume_uuid = ?")) {
                 ps.setString(1, r.getUuid());
-                ps.executeUpdate();
+                ps.execute();
             }
             //add new contacts
             insertContacts(r, conn);
@@ -139,5 +135,9 @@ public class SqlStorage implements Storage {
             }
             ps.executeBatch();
         }
+    }
+
+    private void addContact(Resume r, ResultSet rs) throws SQLException {
+        r.setContact(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
     }
 }
