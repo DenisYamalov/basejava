@@ -2,8 +2,7 @@ package ru.javawebinar.basejava.storage;
 
 
 import ru.javawebinar.basejava.exception.NotExistStorageException;
-import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.sql.SqlHelper;
 
 import java.sql.Connection;
@@ -11,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -41,8 +41,8 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         return sqlHelper.execute("SELECT * FROM resume r " +
-                "LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
-                "WHERE r.uuid = ?", ps -> {
+                                         "LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
+                                         "WHERE r.uuid = ?", ps -> {
             ps.setString(1, uuid);
             ResultSet resultSet = ps.executeQuery();
             if (!resultSet.next()) {
@@ -114,7 +114,7 @@ public class SqlStorage implements Storage {
 
             //remove obsolete contacts
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact " +
-                    "WHERE resume_uuid = ?")) {
+                                                                      "WHERE resume_uuid = ?")) {
                 ps.setString(1, r.getUuid());
                 ps.execute();
             }
@@ -126,7 +126,7 @@ public class SqlStorage implements Storage {
 
     private void insertContacts(Resume r, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) " +
-                "VALUES (?,?,?)")) {
+                                                                  "VALUES (?,?,?)")) {
             for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
                 ps.setString(1, r.getUuid());
                 ps.setString(2, e.getKey().name());
@@ -139,5 +139,34 @@ public class SqlStorage implements Storage {
 
     private void addContact(Resume r, ResultSet rs) throws SQLException {
         r.setContact(ContactType.valueOf(rs.getString("type")), rs.getString("value"));
+    }
+
+    private void insertSections(Resume r, Connection conn) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section " +
+                                                                  "(resume_uuid, section_type, section_value) " +
+                                                                  "VALUES (?,?,?)")) {
+            for (Map.Entry<SectionType, Section> e : r.getSections().entrySet()) {
+                ps.setString(1, r.getUuid());
+                SectionType sectionType = e.getKey();
+                ps.setString(2, sectionType.name());
+                switch (sectionType) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        ps.setString(3, e.getValue().toString());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        ListSection listSection = (ListSection) e.getValue();
+                        ps.setString(3, String.join("\n", listSection.getList()));
+                        break;
+                    case EXPERIENCE:
+                        break;
+                    case EDUCATION:
+                        break;
+                }
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
     }
 }
