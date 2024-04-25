@@ -10,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -42,21 +41,21 @@ public class SqlStorage implements Storage {
     @Override
     public Resume get(String uuid) {
         return sqlHelper.execute("SELECT * FROM resume r " +
-                        "LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
-                        "LEFT JOIN section s on r.uuid= s.resume_uuid WHERE r.uuid = ?",
-                ps -> {
-                    ps.setString(1, uuid);
-                    ResultSet resultSet = ps.executeQuery();
-                    if (!resultSet.next()) {
-                        throw new NotExistStorageException(uuid);
-                    }
-                    Resume resume = new Resume(uuid, resultSet.getString("full_name"));
-                    do {
-                        addContact(resume, resultSet);
-                        addSection(resume, resultSet);
-                    } while (resultSet.next());
-                    return resume;
-                });
+                                         "LEFT JOIN contact c ON r.uuid = c.resume_uuid " +
+                                         "LEFT JOIN section s on r.uuid= s.resume_uuid WHERE r.uuid = ?",
+                                 ps -> {
+                                     ps.setString(1, uuid);
+                                     ResultSet resultSet = ps.executeQuery();
+                                     if (!resultSet.next()) {
+                                         throw new NotExistStorageException(uuid);
+                                     }
+                                     Resume resume = new Resume(uuid, resultSet.getString("full_name"));
+                                     do {
+                                         addContact(resume, resultSet);
+                                         addSection(resume, resultSet);
+                                     } while (resultSet.next());
+                                     return resume;
+                                 });
     }
 
     @Override
@@ -125,12 +124,12 @@ public class SqlStorage implements Storage {
 
             //remove obsolete contacts
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact " +
-                    "WHERE resume_uuid = ?")) {
+                                                                      "WHERE resume_uuid = ?")) {
                 ps.setString(1, r.getUuid());
                 ps.execute();
             }
             try (PreparedStatement ps = conn.prepareStatement("DELETE FROM section " +
-                    "WHERE resume_uuid = ?")) {
+                                                                      "WHERE resume_uuid = ?")) {
                 ps.setString(1, r.getUuid());
                 ps.execute();
             }
@@ -143,7 +142,7 @@ public class SqlStorage implements Storage {
 
     private void insertContacts(Resume r, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO contact (resume_uuid, type, value) " +
-                "VALUES (?,?,?)")) {
+                                                                  "VALUES (?,?,?)")) {
             for (Map.Entry<ContactType, String> e : r.getContacts().entrySet()) {
                 ps.setString(1, r.getUuid());
                 ps.setString(2, e.getKey().name());
@@ -160,8 +159,8 @@ public class SqlStorage implements Storage {
 
     private void insertSections(Resume r, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section " +
-                "(resume_uuid, section_type, section_value) " +
-                "VALUES (?,?,?)")) {
+                                                                  "(resume_uuid, section_type, section_value) " +
+                                                                  "VALUES (?,?,?)")) {
             for (Map.Entry<SectionType, Section> e : r.getSections().entrySet()) {
                 ps.setString(1, r.getUuid());
                 SectionType sectionType = e.getKey();
@@ -169,7 +168,8 @@ public class SqlStorage implements Storage {
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        ps.setString(3, e.getValue().toString());
+                        TextSection textSection = (TextSection) e.getValue();
+                        ps.setString(3, textSection.getText());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
@@ -187,7 +187,6 @@ public class SqlStorage implements Storage {
     }
 
     private void addSection(Resume r, ResultSet rs) throws SQLException {
-
         SectionType sectionType = SectionType.valueOf(rs.getString("section_type"));
         Section section = null;
         switch (sectionType) {
