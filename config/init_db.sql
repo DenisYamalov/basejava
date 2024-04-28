@@ -16,7 +16,9 @@ CREATE UNIQUE INDEX contact_uuid_type_index
 
 CREATE TABLE section
 (
-    resume_uuid VARCHAR(36) NOT NULL REFERENCES resume (uuid) ON DELETE CASCADE,
-    section_type VARCHAR(20) NOT NULL,
-    section_value TEXT NOT NULL
+    resume_uuid   VARCHAR(36) NOT NULL REFERENCES resume (uuid) ON DELETE CASCADE,
+    section_type  VARCHAR(20) NOT NULL,
+    section_value TEXT        NOT NULL
 );
+CREATE INDEX section_uuid_index
+    ON section (resume_uuid);
