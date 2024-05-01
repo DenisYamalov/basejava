@@ -34,8 +34,8 @@ public class ResumeTestData {
         addTextSections(resume);
         addAchievements(resume);
         addQualifications(resume);
-//        addExperience(resume);
-//        addEducation(resume);
+        addExperience(resume);
+        addEducation(resume);
         return resume;
     }
     private static void addContacts(Resume resume) {
