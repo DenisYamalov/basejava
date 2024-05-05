@@ -3,8 +3,8 @@ package ru.javawebinar.basejava.web;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.ContactType;
 import ru.javawebinar.basejava.model.Resume;
-import ru.javawebinar.basejava.storage.SqlStorage;
 import ru.javawebinar.basejava.storage.Storage;
+import ru.javawebinar.basejava.util.HtmlUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/resume")
 public class ResumeServlet extends HttpServlet {
@@ -47,6 +46,7 @@ public class ResumeServlet extends HttpServlet {
                          HttpServletResponse response) throws IOException, ServletException {
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
+
         if (action == null) {
             request.setAttribute("resumes", storage.getAllSorted());
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
@@ -58,9 +58,13 @@ public class ResumeServlet extends HttpServlet {
                 storage.delete(uuid);
                 response.sendRedirect("resume");
                 return;
+
             case "view":
             case "edit":
                 r = storage.get(uuid);
+                break;
+            case "add":
+                r= new Resume();
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
