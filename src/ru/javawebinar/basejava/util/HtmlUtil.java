@@ -2,6 +2,8 @@ package ru.javawebinar.basejava.util;
 
 import ru.javawebinar.basejava.model.*;
 
+import java.util.List;
+
 public class HtmlUtil {
     public static String toHtml(ContactType contactType, String value) {
         return (value == null) ? "" : toHtml0(contactType, value);
@@ -23,6 +25,7 @@ public class HtmlUtil {
     private static String toLink(String href, String title) {
         return "<a href='" + href + "'>" + title + "</a>";
     }
+
     public static String toHtml(SectionType sectionType, Section section) {
         return (section == null) ? "" : toHtml0(sectionType, section);
     }
@@ -49,7 +52,15 @@ public class HtmlUtil {
                 CompanySection companySection = (CompanySection) section;
                 companySection.getCompanies().forEach(company -> {
                     stringBuilder.append("<li>");
-                    stringBuilder.append(company);
+                    stringBuilder.append("<a " + "href=").append(company.getHomepage().getUrl()).append(">")
+                            .append(company.getHomepage().getName()).append("</a>");
+                    List<Company.Period> periods = company.getPeriods();
+                    periods.forEach(period -> {
+                        stringBuilder.append("<div>").append(period.getStartDate()).append(" - ")
+                                .append(period.getFinishDate()).append("</div>");
+                        stringBuilder.append("<div>").append(period.getTitle()).append("</div>");
+                        stringBuilder.append("<div>").append(period.getDescription()).append("</div>");
+                    });
                     stringBuilder.append("</li>");
                 });
                 return stringBuilder.toString();
