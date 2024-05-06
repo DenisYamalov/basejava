@@ -58,11 +58,15 @@ public class HtmlUtil {
                     periods.forEach(period -> {
                         stringBuilder.append("<div>").append(period.getStartDate()).append(" - ")
                                 .append(period.getFinishDate()).append("</div>");
-                        stringBuilder.append("<div>").append(period.getTitle()).append("</div>");
+                        String title = period.getTitle();
+                        if (title != null) {
+                            stringBuilder.append("<div>").append(title).append("</div>");
+                        }
                         stringBuilder.append("<div>").append(period.getDescription()).append("</div>");
                     });
                     stringBuilder.append("</li>");
                 });
+                stringBuilder.append("</ul>");
                 return stringBuilder.toString();
         }
         return "";
