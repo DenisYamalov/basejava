@@ -1,5 +1,6 @@
 <%@ page import="ru.javawebinar.basejava.util.HtmlUtil" %>
 <%@ page import="ru.javawebinar.basejava.model.*" %>
+<%@ page import="java.util.stream.Collectors" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -38,13 +39,26 @@
                     </c:when>
                     <c:when test="${sectionType==SectionType.ACHIEVEMENT || sectionType==SectionType.QUALIFICATIONS}">
                         <dd><textarea rows="3"
-                                      cols="100"><%=((ListSection) resume.getSection(sectionType)).getList()%></textarea>
+                                      cols="100"><%=String.join("/n", ((ListSection) resume.getSection(sectionType)).getList())%></textarea>
                         </dd>
                     </c:when>
                     <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">
-                        <dd><textarea rows="3"
-                                      cols="100"><%=((CompanySection) resume.getSection(sectionType)).getCompanies()%></textarea>
-                        </dd>
+                        <c:forEach var="company" items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
+                            <dd>
+                                <label class="companyName">Наиемнование организации
+                                    <input type="text" name="${company.homepage.name}">
+                                </label>
+                                <label class="companyUrl"> URL
+                                    <input type="text" name="${company.homepage.url}">
+                                </label>
+                                <c:forEach var="period" items="${company.periods}">
+                                    <input type="date" name="${period.startDate}">
+                                    <input type="date" name="${period.finishDate}">
+                                    <input type="text" name="${period.title}">
+                                    <textarea rows="3" cols="100">${period.description}</textarea>
+                                </c:forEach>
+                            </dd>
+                        </c:forEach>
                     </c:when>
                 </c:choose>
 
