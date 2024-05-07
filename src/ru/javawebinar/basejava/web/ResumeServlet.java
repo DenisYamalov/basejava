@@ -1,8 +1,7 @@
 package ru.javawebinar.basejava.web;
 
 import ru.javawebinar.basejava.Config;
-import ru.javawebinar.basejava.model.ContactType;
-import ru.javawebinar.basejava.model.Resume;
+import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.Storage;
 import ru.javawebinar.basejava.util.HtmlUtil;
 
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet("/resume")
 public class ResumeServlet extends HttpServlet {
@@ -36,6 +37,30 @@ public class ResumeServlet extends HttpServlet {
                 r.setContact(type, value);
             } else {
                 r.getContacts().remove(type);
+            }
+        }
+        for (SectionType sectionType:SectionType.values()){
+            String value = request.getParameter(sectionType.name());
+            if (value != null && !value.trim().isEmpty()) {
+                Section section = null;
+                switch (sectionType){
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        section = new TextSection(value.trim());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        section = new ListSection(value.trim().split("\n"));
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        String[] companies = value.trim().split("\n");
+                        section = new CompanySection();
+                        break;
+                }
+                r.setSection(sectionType,section);
+            } else {
+                r.getSections().remove(sectionType);
             }
         }
         storage.update(r);

@@ -33,41 +33,41 @@
                 <dt>${sectionType.title}:</dt>
                 <c:choose>
                     <c:when test="${sectionType==SectionType.PERSONAL || sectionType==SectionType.OBJECTIVE}">
-                        <dd><textarea rows="3"
+                        <dd><textarea name="${sectionType.name()}" rows="3"
                                       cols="100"><%=((TextSection) resume.getSection(sectionType)).getText()%></textarea>
                         </dd>
                     </c:when>
                     <c:when test="${sectionType==SectionType.ACHIEVEMENT || sectionType==SectionType.QUALIFICATIONS}">
-                        <dd><textarea rows="3"
-                                      cols="100"><%=String.join("/n", ((ListSection) resume.getSection(sectionType)).getList())%></textarea>
+                        <dd><textarea name="${sectionType.name()}" rows="3"
+                                      cols="100"><%=String.join("\n", ((ListSection) resume.getSection(sectionType)).getList())%></textarea>
                         </dd>
                     </c:when>
-                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">
-                        <c:forEach var="company" items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
-                            <dd>
-                                <label class="companyName">Наиемнование организации
-                                    <input type="text" value="${company.homepage.name}">
-                                </label>
-                                <label class="companyUrl">Ссылка
-                                    <input type="text" value="${company.homepage.url}">
-                                </label>
-                                <c:forEach var="period" items="${company.periods}">
-                                    <label>Дата начала
-                                        <input type="date" value="${period.startDate}">
-                                    </label>
-                                    <label>Дата завершения
-                                        <input type="date" value="${period.finishDate}">
-                                    </label>
-                                    <label>Должность
-                                        <input type="text" value="${period.title}">
-                                    </label>
-                                    <label>Описание
-                                        <textarea rows="3" cols="100">${period.description}</textarea>
-                                    </label>
-                                </c:forEach>
-                            </dd>
-                        </c:forEach>
-                    </c:when>
+<%--                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">--%>
+<%--                        <c:forEach var="company" items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">--%>
+<%--                            <dd>--%>
+<%--                                <label class="companyName">Наиемнование организации--%>
+<%--                                    <input type="text" value="${company.homepage.name}">--%>
+<%--                                </label>--%>
+<%--                                <label class="companyUrl">Ссылка--%>
+<%--                                    <input type="text" value="${company.homepage.url}">--%>
+<%--                                </label>--%>
+<%--                                <c:forEach var="period" items="${company.periods}">--%>
+<%--                                    <label>Дата начала--%>
+<%--                                        <input type="date" value="${period.startDate}">--%>
+<%--                                    </label>--%>
+<%--                                    <label>Дата завершения--%>
+<%--                                        <input type="date" value="${period.finishDate}">--%>
+<%--                                    </label>--%>
+<%--                                    <label>Должность--%>
+<%--                                        <input type="text" value="${period.title}">--%>
+<%--                                    </label>--%>
+<%--                                    <label>Описание--%>
+<%--                                        <textarea rows="3" cols="100">${period.description}</textarea>--%>
+<%--                                    </label>--%>
+<%--                                </c:forEach>--%>
+<%--                            </dd>--%>
+<%--                        </c:forEach>--%>
+<%--                    </c:when>--%>
                 </c:choose>
 
             </dl>
