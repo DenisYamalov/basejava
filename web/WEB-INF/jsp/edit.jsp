@@ -46,16 +46,24 @@
                         <c:forEach var="company" items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
                             <dd>
                                 <label class="companyName">Наиемнование организации
-                                    <input type="text" name="${company.homepage.name}">
+                                    <input type="text" value="${company.homepage.name}">
                                 </label>
-                                <label class="companyUrl"> URL
-                                    <input type="text" name="${company.homepage.url}">
+                                <label class="companyUrl">Ссылка
+                                    <input type="text" value="${company.homepage.url}">
                                 </label>
                                 <c:forEach var="period" items="${company.periods}">
-                                    <input type="date" name="${period.startDate}">
-                                    <input type="date" name="${period.finishDate}">
-                                    <input type="text" name="${period.title}">
-                                    <textarea rows="3" cols="100">${period.description}</textarea>
+                                    <label>Дата начала
+                                        <input type="date" value="${period.startDate}">
+                                    </label>
+                                    <label>Дата завершения
+                                        <input type="date" value="${period.finishDate}">
+                                    </label>
+                                    <label>Должность
+                                        <input type="text" value="${period.title}">
+                                    </label>
+                                    <label>Описание
+                                        <textarea rows="3" cols="100">${period.description}</textarea>
+                                    </label>
                                 </c:forEach>
                             </dd>
                         </c:forEach>
