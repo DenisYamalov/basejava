@@ -49,30 +49,37 @@
                         </c:if>
                     </c:when>
 <%--                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">--%>
-<%--                        <c:forEach var="company" items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">--%>
-<%--                            <dd>--%>
-<%--                                <label class="companyName">Наиемнование организации--%>
-<%--                                    <input type="text" value="${company.homepage.name}">--%>
-<%--                                </label>--%>
-<%--                                <label class="companyUrl">Ссылка--%>
-<%--                                    <input type="text" value="${company.homepage.url}">--%>
-<%--                                </label>--%>
-<%--                                <c:forEach var="period" items="${company.periods}">--%>
-<%--                                    <label>Дата начала--%>
-<%--                                        <input type="date" value="${period.startDate}">--%>
+<%--                        <c:if test="${resume.getSection(sectionType)!=null}">--%>
+<%--                            <c:forEach var="company" items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">--%>
+<%--                                <dd>--%>
+<%--                                    <label class="companyName">Наиемнование организации--%>
+<%--                                        <input type="text" name="companyName" value="${company.homepage.name}">--%>
 <%--                                    </label>--%>
-<%--                                    <label>Дата завершения--%>
-<%--                                        <input type="date" value="${period.finishDate}">--%>
+<%--                                    <label class="companyUrl">Ссылка--%>
+<%--                                        <input type="text" name="companyUrl" value="${company.homepage.url}">--%>
 <%--                                    </label>--%>
-<%--                                    <label>Должность--%>
-<%--                                        <input type="text" value="${period.title}">--%>
-<%--                                    </label>--%>
-<%--                                    <label>Описание--%>
-<%--                                        <textarea rows="3" cols="100">${period.description}</textarea>--%>
-<%--                                    </label>--%>
-<%--                                </c:forEach>--%>
-<%--                            </dd>--%>
-<%--                        </c:forEach>--%>
+<%--                                    <c:forEach var="period" items="${company.periods}">--%>
+<%--                                        <label>Дата начала--%>
+<%--                                            <input type="date" name="startDate" value="${period.startDate}">--%>
+<%--                                        </label>--%>
+<%--                                        <label>Дата завершения--%>
+<%--                                            <input type="date" name="finishDate" value="${period.finishDate}">--%>
+<%--                                        </label>--%>
+<%--                                        <label>Должность--%>
+<%--                                            <input type="text" name="companyObjective" value="${period.title}">--%>
+<%--                                        </label>--%>
+<%--                                        <label>Описание--%>
+<%--                                            <textarea name="${sectionType.name()}" rows="3" cols="100">${period.description}</textarea>--%>
+<%--                                        </label>--%>
+<%--                                        <button>Добавить период</button>--%>
+<%--                                    </c:forEach>--%>
+<%--                                </dd>--%>
+<%--                                <button>Добавить организацию</button>--%>
+<%--                            </c:forEach>--%>
+<%--                        </c:if>--%>
+<%--                        <c:if test="${resume.getSection(sectionType)==null}">--%>
+
+<%--                        </c:if>--%>
 <%--                    </c:when>--%>
                 </c:choose>
 
