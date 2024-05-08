@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @WebServlet("/resume")
 public class ResumeServlet extends HttpServlet {
@@ -29,8 +30,13 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
-        r.setFullName(fullName);
+        Resume r;
+        if (uuid.isEmpty()) {
+            r = new Resume(UUID.randomUUID().toString(),fullName);
+        } else {
+            r = storage.get(uuid);
+            r.setFullName(fullName);
+        }
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && !value.trim().isEmpty()) {
@@ -39,12 +45,12 @@ public class ResumeServlet extends HttpServlet {
                 r.getContacts().remove(type);
             }
         }
-        for (SectionType sectionType:SectionType.values()){
+        for (SectionType sectionType : SectionType.values()) {
             String value = request.getParameter(sectionType.name());
             if (value != null && !value.trim().isEmpty()) {
-                value=value.trim();
+                value = value.trim();
                 Section section = null;
-                switch (sectionType){
+                switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
                         section = new TextSection(value);
@@ -59,12 +65,16 @@ public class ResumeServlet extends HttpServlet {
                         section = new CompanySection();
                         break;
                 }
-                r.setSection(sectionType,section);
+                r.setSection(sectionType, section);
             } else {
                 r.getSections().remove(sectionType);
             }
         }
-        storage.update(r);
+        if (uuid.isEmpty()) {
+            storage.save(r);
+        } else {
+            storage.update(r);
+        }
         response.sendRedirect("resume");
     }
 
@@ -90,7 +100,7 @@ public class ResumeServlet extends HttpServlet {
                 r = storage.get(uuid);
                 break;
             case "add":
-                r= new Resume();
+                r = new Resume();
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
