@@ -42,19 +42,20 @@ public class ResumeServlet extends HttpServlet {
         for (SectionType sectionType:SectionType.values()){
             String value = request.getParameter(sectionType.name());
             if (value != null && !value.trim().isEmpty()) {
+                value=value.trim();
                 Section section = null;
                 switch (sectionType){
                     case PERSONAL:
                     case OBJECTIVE:
-                        section = new TextSection(value.trim());
+                        section = new TextSection(value);
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        section = new ListSection(value.trim().split("\n"));
+                        section = new ListSection(value.split("\n"));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        String[] companies = value.trim().split("\n");
+                        String[] companies = value.split("\n");
                         section = new CompanySection();
                         break;
                 }

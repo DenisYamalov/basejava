@@ -33,14 +33,20 @@
                 <dt>${sectionType.title}:</dt>
                 <c:choose>
                     <c:when test="${sectionType==SectionType.PERSONAL || sectionType==SectionType.OBJECTIVE}">
-                        <dd><textarea name="${sectionType.name()}" rows="3"
-                                      cols="100"><%=((TextSection) resume.getSection(sectionType)).getText()%></textarea>
-                        </dd>
+                        <jsp:include page="fragments/emptysection.jsp"/>
+                        <c:if test="${resume.getSection(sectionType)!=null}">
+                            <dd><textarea name="${sectionType.name()}" rows="3"
+                                          cols="100"><%=((TextSection) resume.getSection(sectionType)).getText()%></textarea>
+                            </dd>
+                        </c:if>
                     </c:when>
                     <c:when test="${sectionType==SectionType.ACHIEVEMENT || sectionType==SectionType.QUALIFICATIONS}">
+                        <jsp:include page="fragments/emptysection.jsp"/>
+                        <c:if test="${resume.getSection(sectionType)!=null}">
                         <dd><textarea name="${sectionType.name()}" rows="3"
                                       cols="100"><%=String.join("\n", ((ListSection) resume.getSection(sectionType)).getList())%></textarea>
                         </dd>
+                        </c:if>
                     </c:when>
 <%--                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">--%>
 <%--                        <c:forEach var="company" items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">--%>
