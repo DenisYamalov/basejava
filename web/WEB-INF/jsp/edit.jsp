@@ -15,7 +15,7 @@
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
             <dt>Имя:</dt>
-            <dd><input type="text" name="fullName" size=50 value="${resume.fullName}"></dd>
+            <dd><input type="text" name="fullName" size=50 value="${resume.fullName}" pattern="[A-Za-z]{1,255}" title="Имя не должно быть пустым,или состоять из пробелов." required></dd>
         </dl>
         <h3>Контакты:</h3>
         <c:forEach var="type" items="<%=ContactType.values()%>">
@@ -50,39 +50,41 @@
                             </dd>
                         </c:if>
                     </c:when>
-                    <%--                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">--%>
-                    <%--                        <c:if test="${resume.getSection(sectionType)!=null}">--%>
-                    <%--                            <c:forEach var="company" items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">--%>
-                    <%--                                <dd>--%>
-                    <%--                                    <label class="companyName">Наиемнование организации--%>
-                    <%--                                        <input type="text" name="companyName" value="${company.homepage.name}">--%>
-                    <%--                                    </label>--%>
-                    <%--                                    <label class="companyUrl">Ссылка--%>
-                    <%--                                        <input type="text" name="companyUrl" value="${company.homepage.url}">--%>
-                    <%--                                    </label>--%>
-                    <%--                                    <c:forEach var="period" items="${company.periods}">--%>
-                    <%--                                        <label>Дата начала--%>
-                    <%--                                            <input type="date" name="startDate" value="${period.startDate}">--%>
-                    <%--                                        </label>--%>
-                    <%--                                        <label>Дата завершения--%>
-                    <%--                                            <input type="date" name="finishDate" value="${period.finishDate}">--%>
-                    <%--                                        </label>--%>
-                    <%--                                        <label>Должность--%>
-                    <%--                                            <input type="text" name="companyObjective" value="${period.title}">--%>
-                    <%--                                        </label>--%>
-                    <%--                                        <label>Описание--%>
-                    <%--                                            <textarea name="${sectionType.name()}" rows="3" cols="100">${period.description}</textarea>--%>
-                    <%--                                        </label>--%>
-                    <%--                                        <button>Добавить период</button>--%>
-                    <%--                                    </c:forEach>--%>
-                    <%--                                </dd>--%>
-                    <%--                                <button>Добавить организацию</button>--%>
-                    <%--                            </c:forEach>--%>
-                    <%--                        </c:if>--%>
-                    <%--                        <c:if test="${resume.getSection(sectionType)==null}">--%>
+                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">
+                        <c:if test="${resume.getSection(sectionType)!=null}">
+                            <c:forEach var="company"
+                                       items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
+                                <dd>
+                                    <label class="companyName">Наиемнование организации
+                                        <input type="text" name="companyName" value="${company.homepage.name}">
+                                    </label>
+                                    <label class="companyUrl">Ссылка
+                                        <input type="text" name="companyUrl" value="${company.homepage.url}">
+                                    </label>
+                                    <c:forEach var="period" items="${company.periods}">
+                                        <label>Дата начала
+                                            <input type="date" name="startDate" value="${period.startDate}">
+                                        </label>
+                                        <label>Дата завершения
+                                            <input type="date" name="finishDate" value="${period.finishDate}">
+                                        </label>
+                                        <label>Должность
+                                            <input type="text" name="companyObjective" value="${period.title}">
+                                        </label>
+                                        <label>Описание
+                                            <textarea name="${sectionType.name()}" rows="3"
+                                                      cols="100">${period.description}</textarea>
+                                        </label>
+                                        <button>Добавить период</button>
+                                    </c:forEach>
+                                </dd>
+                                <button>Добавить организацию</button>
+                            </c:forEach>
+                        </c:if>
+                        <c:if test="${resume.getSection(sectionType)==null}">
 
-                    <%--                        </c:if>--%>
-                    <%--                    </c:when>--%>
+                        </c:if>
+                    </c:when>
                 </c:choose>
 
             </dl>

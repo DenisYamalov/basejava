@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @WebServlet("/resume")
 public class ResumeServlet extends HttpServlet {
@@ -29,10 +31,11 @@ public class ResumeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
-        String fullName = request.getParameter("fullName");
+        String fullName = request.getParameter("fullName").trim();
+        if (fullName.isEmpty()) fullName = null;
         Resume r;
         if (uuid.isEmpty()) {
-            r = new Resume(UUID.randomUUID().toString(),fullName);
+            r = new Resume(UUID.randomUUID().toString(), fullName);
         } else {
             r = storage.get(uuid);
             r.setFullName(fullName);
@@ -57,7 +60,10 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        section = new ListSection(value.split("\n"));
+                        section = new ListSection(Arrays.stream(value.split("\n"))
+                                                          .map(String::trim)
+                                                          .filter(s -> !s.isEmpty())
+                                                          .collect(Collectors.toList()));
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
