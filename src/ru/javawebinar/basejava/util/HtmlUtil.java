@@ -50,22 +50,25 @@ public class HtmlUtil {
             case EXPERIENCE:
             case EDUCATION:
                 CompanySection companySection = (CompanySection) section;
-                companySection.getCompanies().forEach(company -> {
-                    stringBuilder.append("<li>");
-                    stringBuilder.append("<a " + "href=").append(company.getHomepage().getUrl()).append(">")
-                            .append(company.getHomepage().getName()).append("</a>");
-                    List<Company.Period> periods = company.getPeriods();
-                    periods.forEach(period -> {
-                        stringBuilder.append("<div>").append(period.getStartDate()).append(" - ")
-                                .append(period.getFinishDate()).append("</div>");
-                        String title = period.getTitle();
-                        if (title != null) {
-                            stringBuilder.append("<div>").append(title).append("</div>");
-                        }
-                        stringBuilder.append("<div>").append(period.getDescription()).append("</div>");
+                List<Company> companies = companySection.getCompanies();
+                if (companies != null){
+                    companies.forEach(company -> {
+                        stringBuilder.append("<li>");
+                        stringBuilder.append("<a " + "href=").append(company.getHomepage().getUrl()).append(">")
+                                .append(company.getHomepage().getName()).append("</a>");
+                        List<Company.Period> periods = company.getPeriods();
+                        periods.forEach(period -> {
+                            stringBuilder.append("<div>").append(period.getStartDate()).append(" - ")
+                                    .append(period.getFinishDate()).append("</div>");
+                            String title = period.getTitle();
+                            if (title != null) {
+                                stringBuilder.append("<div>").append(title).append("</div>");
+                            }
+                            stringBuilder.append("<div>").append(period.getDescription()).append("</div>");
+                        });
+                        stringBuilder.append("</li>");
                     });
-                    stringBuilder.append("</li>");
-                });
+                }
                 stringBuilder.append("</ul>");
                 return stringBuilder.toString();
         }
