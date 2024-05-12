@@ -23,5 +23,3 @@ CREATE TABLE section
 );
 CREATE INDEX section_uuid_index
     ON section (resume_uuid, section_type);
-
-DROP INDEX section_uuid_index;

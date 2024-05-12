@@ -1,4 +1,5 @@
 <%@ page import="ru.javawebinar.basejava.model.*" %>
+<%@ page import="ru.javawebinar.basejava.util.HtmlUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -46,110 +47,60 @@
                                     : String.join("\n", ((ListSection) resume.getSection(sectionType)).getList())%></textarea>
                         </dd>
                     </c:when>
-<%--                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">--%>
-<%--                        <c:if test="${resume.getSection(sectionType)!=null}">--%>
-<%--                            <c:forEach var="company"--%>
-<%--                                       items="<%=((CompanySection) resume.getSection(sectionType)).getCompanies()%>">--%>
-<%--                                <div class="companyContainer">--%>
-<%--                                    <dd>--%>
-<%--                                        <label class="companyName">Наименование организации--%>
-<%--                                            <input type="text" name="companyName" value="${company.homepage.name}">--%>
-<%--                                        </label>--%>
-<%--                                        <label class="companyUrl">Ссылка--%>
-<%--                                            <input type="text" name="companyUrl" value="${company.homepage.url}">--%>
-<%--                                        </label>--%>
-<%--                                        <c:forEach var="period" items="${company.periods}">--%>
-<%--                                            <c:if test="${period!=null}">--%>
-<%--                                                <div class="period_container">--%>
-<%--                                                    <label>Дата начала--%>
-<%--                                                        <input type="date" name="startDate" value="${period.startDate}">--%>
-<%--                                                    </label>--%>
-<%--                                                    <label>Дата завершения--%>
-<%--                                                        <input type="date" name="finishDate"--%>
-<%--                                                               value="${period.finishDate}">--%>
-<%--                                                    </label>--%>
-<%--                                                    <label>Должность--%>
-<%--                                                        <input type="text" name="companyObjective"--%>
-<%--                                                               value="${period.title}">--%>
-<%--                                                    </label>--%>
-<%--                                                    <label>Описание--%>
-<%--                                                        <textarea name="${sectionType.name()}" rows="3"--%>
-<%--                                                                  cols="100">${period.description}</textarea>--%>
-<%--                                                    </label>--%>
-<%--                                                </div>--%>
-<%--                                            </c:if>--%>
-<%--                                        </c:forEach>--%>
-<%--                                        <div class="period_container">--%>
-<%--                                            <label>Дата начала--%>
-<%--                                                <input type="date" name="startDate" value="${period.startDate}">--%>
-<%--                                            </label>--%>
-<%--                                            <label>Дата завершения--%>
-<%--                                                <input type="date" name="finishDate" value="${period.finishDate}">--%>
-<%--                                            </label>--%>
-<%--                                            <label>Должность--%>
-<%--                                                <input type="text" name="companyObjective" value="${period.title}">--%>
-<%--                                            </label>--%>
-<%--                                            <label>Описание--%>
-<%--                                                <textarea name="${sectionType.name()}" rows="3" cols="100">--%>
-<%--                                                        ${period.description}--%>
-<%--                                                </textarea>--%>
-<%--                                            </label>--%>
-<%--                                        </div>--%>
-<%--                                        <button class="add_button add_period_button" id="add_period">Добавить период--%>
-<%--                                        </button>--%>
-<%--                                    </dd>--%>
-<%--                                </div>--%>
-<%--                            </c:forEach>--%>
-<%--                        </c:if>--%>
-
-<%--                        <c:if test="${resume.getSection(sectionType)==null}">--%>
-<%--                            <div class="companyContainer" id="empty_organization">--%>
-<%--                                <dd>--%>
-<%--                                    <label class="companyName">Наименование организации--%>
-<%--                                        <input type="text" name="companyName" value="${company.homepage.name}">--%>
-<%--                                    </label>--%>
-<%--                                    <label class="companyUrl">Ссылка--%>
-<%--                                        <input type="text" name="companyUrl" value="${company.homepage.url}">--%>
-<%--                                    </label>--%>
-<%--                                    <div class="period_container" id="empty_period_1">--%>
-<%--                                        <label>Дата начала--%>
-<%--                                            <input type="date" name="startDate" value="${period.startDate}">--%>
-<%--                                        </label>--%>
-<%--                                        <label>Дата завершения--%>
-<%--                                            <input type="date" name="finishDate" value="${period.finishDate}">--%>
-<%--                                        </label>--%>
-<%--                                        <label>Должность--%>
-<%--                                            <input type="text" name="companyObjective" value="${period.title}">--%>
-<%--                                        </label>--%>
-<%--                                        <label>Описание--%>
-<%--                                            <textarea name="${sectionType.name()}" rows="3" cols="100">--%>
-<%--                                                    ${period.description}--%>
-<%--                                            </textarea>--%>
-<%--                                        </label>--%>
-<%--                                    </div>--%>
-<%--                                    <button class="add_button add_period_button" id="add_period_1" type="button">--%>
-<%--                                        Добавить период--%>
-<%--                                    </button>--%>
-<%--                                </dd>--%>
-<%--                            </div>--%>
-
-<%--                        </c:if>--%>
-<%--                        <button class="add_button" id="add_organization" type="button">Добавить организацию</button>--%>
-<%--                    </c:when>--%>
+                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">
+                        <c:forEach var="company"
+                                   items="<%=resume.getSection(sectionType)==null ? HtmlUtil.getNewCompany() : ((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
+                            <div class="companyContainer">
+                                <dd>
+                                    <label class="companyName">Наименование организации
+                                        <input type="text" name="companyName"
+                                               value="${company.homepage.name}">
+                                    </label>
+                                    <label class="companyUrl">Ссылка
+                                        <input type="text" name="companyUrl"
+                                               value="${company.homepage.url}">
+                                    </label>
+                                    <c:forEach var="period" items="${company.periods}">
+                                        <div class="period_container">
+                                            <label>Дата начала
+                                                <input type="date" name="startDate"
+                                                       value="${period.startDate}">
+                                            </label>
+                                            <label>Дата завершения
+                                                <input type="date" name="finishDate"
+                                                       value="${period.finishDate}">
+                                            </label>
+                                            <label>Должность
+                                                <input type="text" name="companyObjective"
+                                                       value="${period.title}">
+                                            </label>
+                                            <label>Описание
+                                                <textarea name="${sectionType.name()}" rows="3"
+                                                          cols="100">${period.description}</textarea>
+                                            </label>
+                                        </div>
+                                    </c:forEach>
+                                    <button class="add_button add_period_button" type="button">Добавить период
+                                    </button>
+                                </dd>
+                            </div>
+                        </c:forEach>
+                        <button class="add_button" id="add_organization" type="button">Добавить организацию</button>
+                    </c:when>
                 </c:choose>
             </dl>
         </c:forEach>
         <script>
             let clonePeriod = 1
             $('.add_period_button').click(function () {
-                $('#empty_period_1').clone()
-                    .attr('id', 'empty_period_' + ++clonePeriod)
-                    .insertAfter('[id^=empty_period_]:last');
+                $('.period_container').clone()
+                    // .attr('id', 'empty_period_' + ++clonePeriod)
+                    .insertBefore(this.click());
             });
         </script>
         <hr>
         <button type="submit">Сохранить</button>
-        <button onclick="window.history.back()">Отменить</button>
+        <button type="reset" onclick="window.history.back()">Отменить</button>
     </form>
 </section>
 <jsp:include page="fragments/footer.jsp"/>

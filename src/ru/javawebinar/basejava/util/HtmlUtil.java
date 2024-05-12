@@ -74,4 +74,9 @@ public class HtmlUtil {
         }
         return "";
     }
+    public static List<Company> getNewCompany (){
+        Company company = new Company();
+        company.setPeriods(List.of(new Company.Period()));
+        return List.of(company);
+    }
 }

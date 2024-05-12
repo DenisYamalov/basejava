@@ -44,6 +44,14 @@ public class Company implements Serializable {
         return periods;
     }
 
+    public void setHomepage(Link homepage) {
+        this.homepage = homepage;
+    }
+
+    public void setPeriods(List<Period> periods) {
+        this.periods = periods;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
