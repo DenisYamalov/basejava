@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,13 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        String[] companies = value.split("\n");
+                        String periodDescriptions = value;
+                        String[] companyName = request.getParameterValues("companyName");
+                        String[] companyUrl = request.getParameterValues("companyUrl");
+                        String[] startDate = request.getParameterValues("startDate");
+                        String[] finishDate = request.getParameterValues("finishDate");
+                        String[] companyObjective = request.getParameterValues("companyObjective");
+
                         section = new CompanySection();
                         break;
                 }
