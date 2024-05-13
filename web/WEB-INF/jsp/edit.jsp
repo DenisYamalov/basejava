@@ -34,20 +34,20 @@
             <dl>
                 <dt>${sectionType.title}:</dt>
                 <c:choose>
-                    <c:when test="${sectionType==SectionType.PERSONAL || sectionType==SectionType.OBJECTIVE}">
+                    <c:when test="${sectionType eq SectionType.PERSONAL || sectionType eq SectionType.OBJECTIVE}">
                         <dd><textarea name="${sectionType.name()}" rows="3" cols="100"><%=
                         resume.getSection(sectionType) == null ? ""
                                 : ((TextSection) resume.getSection(sectionType)).getText()%></textarea>
                         </dd>
                     </c:when>
-                    <c:when test="${sectionType==SectionType.ACHIEVEMENT || sectionType==SectionType.QUALIFICATIONS}">
+                    <c:when test="${sectionType eq SectionType.ACHIEVEMENT || sectionType eq SectionType.QUALIFICATIONS}">
                         <dd>
                             <textarea name="${sectionType.name()}" rows="3" cols="100"><%=
                             resume.getSection(sectionType) == null ? ""
                                     : String.join("\n", ((ListSection) resume.getSection(sectionType)).getList())%></textarea>
                         </dd>
                     </c:when>
-                    <c:when test="${sectionType==SectionType.EXPERIENCE || sectionType==SectionType.EDUCATION}">
+                    <c:when test="${sectionType eq SectionType.EXPERIENCE || sectionType eq SectionType.EDUCATION}">
                         <c:forEach var="company"
                                    items="<%=resume.getSection(sectionType)==null ? HtmlUtil.getNewCompany() : ((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
                             <div class="companyContainer">
@@ -56,6 +56,7 @@
                                         <input type="text" name="companyName"
                                                value="${company.homepage.name}">
                                     </label>
+<%--                                    <p>companyName = ${pageScope.get("company")}</p>--%>
                                     <label class="companyUrl">Ссылка
                                         <input type="text" name="companyUrl"
                                                value="${company.homepage.url}">
@@ -95,7 +96,7 @@
             $('.add_period_button').click(function () {
                 $('.period_container').clone()
                     // .attr('id', 'empty_period_' + ++clonePeriod)
-                    .insertBefore(this.click());
+                    .insertBefore(this);
             });
         </script>
         <hr>
