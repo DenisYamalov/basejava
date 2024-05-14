@@ -91,7 +91,9 @@
                                 </dd>
                             </div>
                             ${company.periods=periodList}
+                            ${periodList.clear()}
                             ${companyList.add(company)}
+                            ${pageScope.put(sectionType.name(),companyList)}
                         </c:forEach>
                         <button class="add_button" id="add_organization" type="button">Добавить организацию</button>
                     </c:when>
