@@ -1,6 +1,5 @@
 <%@ page import="ru.javawebinar.basejava.model.*" %>
 <%@ page import="ru.javawebinar.basejava.util.HtmlUtil" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -18,7 +17,7 @@
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
             <dt>Имя:</dt>
-            <dd><input type="text" name="fullName" size=50 value="${resume.fullName}" pattern="[A-Za-z ]{1,255}"
+            <dd><input type="text" name="fullName" size=50 value="${resume.fullName}" pattern="[A-Za-z А-Яа-я]{1,255}"
                        title="Имя не должно быть пустым, состоять из пробелов или содержать цифры/спец.символы."
                        required></dd>
         </dl>
@@ -29,7 +28,8 @@
                 <dd><input type="text" name="${type.name()}" size=30 value="${resume.getContact(type)}"></dd>
             </dl>
         </c:forEach>
-        <h3>Секции:</h3>
+<%--        <h3>Секции:</h3>--%>
+        <br>
         <c:forEach var="sectionType" items="<%=SectionType.values()%>">
             <jsp:useBean id="sectionType" type="ru.javawebinar.basejava.model.SectionType"/>
             <dl>
@@ -49,56 +49,53 @@
                         </dd>
                     </c:when>
                     <c:when test="${sectionType eq SectionType.EXPERIENCE || sectionType eq SectionType.EDUCATION}">
-                        <c:set var="companyList" value="<%=new ArrayList<Company>()%>" scope="page"/>
                         <c:forEach var="company"
-                                   items="<%=resume.getSection(sectionType)==null ? HtmlUtil.getNewCompany() : ((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
+                                   items="<%=resume.getSection(sectionType)==null ? HtmlUtil.getNewCompany()
+                                   : ((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
                             <div class="companyContainer">
                                 <dd>
                                     <label class="companyName">Наименование организации
-                                        <input type="text" name="companyName"
+                                        <input type="text" name="${sectionType.name()}: companyName "
                                                value="${company.homepage.name}">
                                     </label>
-<%--                                    <p>companyName = ${pageScope.get("company")}</p>--%>
                                     <label class="companyUrl">Ссылка
-                                        <input type="text" name="companyUrl"
+                                        <input type="text" name="${sectionType.name()}: companyUrl"
                                                value="${company.homepage.url}">
                                     </label>
-                                    <c:set var="periodList" value="<%=new ArrayList<Company.Period>()%>" scope="page"/>
+<%--                                    TODO find way to distinct periods--%>
                                     <c:forEach var="period" items="${company.periods}">
                                         <div class="period_container">
                                             <label>Дата начала
-                                                <input type="date" name="startDate"
+                                                <input type="date" name="${sectionType.name()}: startDate"
                                                        value="${period.startDate}">
                                             </label>
                                             <label>Дата завершения
-                                                <input type="date" name="finishDate"
+                                                <input type="date" name="${sectionType.name()}: finishDate"
                                                        value="${period.finishDate}">
                                             </label>
-                                            <label>Должность
-                                                <input type="text" name="companyObjective"
-                                                       value="${period.title}">
-                                            </label>
+                                            <c:if test="${sectionType eq SectionType.EXPERIENCE}">
+                                                <label>Должность
+                                                    <input type="text" name="${sectionType.name()}: companyObjective"
+                                                           value="${period.title}">
+                                                </label>
+                                            </c:if>
                                             <label>Описание
-                                                <textarea name="${sectionType.name()}" rows="3"
+                                                <textarea name="${sectionType.name()}: periodDescription" rows="3"
                                                           cols="100">${period.description}</textarea>
                                             </label>
                                         </div>
-                                        ${periodList.add(period)}
                                     </c:forEach>
-
                                     <button class="add_button add_period_button" type="button">Добавить период
                                     </button>
                                 </dd>
                             </div>
-                            ${company.periods=periodList}
-                            ${periodList.clear()}
-                            ${companyList.add(company)}
-                            ${pageScope.put(sectionType.name(),companyList)}
+<%--                            <input type="hidden" name="${sectionType.name()}" value="${companyList}">--%>
                         </c:forEach>
                         <button class="add_button" id="add_organization" type="button">Добавить организацию</button>
                     </c:when>
                 </c:choose>
             </dl>
+            <br>
         </c:forEach>
         <script>
             let clonePeriod = 1

@@ -68,12 +68,7 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        String periodDescriptions = value;
-                        String[] companyName = request.getParameterValues("companyName");
-                        String[] companyUrl = request.getParameterValues("companyUrl");
-                        String[] startDate = request.getParameterValues("startDate");
-                        String[] finishDate = request.getParameterValues("finishDate");
-                        String[] companyObjective = request.getParameterValues("companyObjective");
+                        //TODO process request.getParameterValues
 
                         section = new CompanySection();
                         break;
