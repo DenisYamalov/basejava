@@ -1,5 +1,6 @@
 <%@ page import="ru.javawebinar.basejava.model.*" %>
 <%@ page import="ru.javawebinar.basejava.util.HtmlUtil" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -48,6 +49,7 @@
                         </dd>
                     </c:when>
                     <c:when test="${sectionType eq SectionType.EXPERIENCE || sectionType eq SectionType.EDUCATION}">
+                        <c:set var="companyList" value="<%=new ArrayList<Company>()%>" scope="page"/>
                         <c:forEach var="company"
                                    items="<%=resume.getSection(sectionType)==null ? HtmlUtil.getNewCompany() : ((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
                             <div class="companyContainer">
@@ -61,6 +63,7 @@
                                         <input type="text" name="companyUrl"
                                                value="${company.homepage.url}">
                                     </label>
+                                    <c:set var="periodList" value="<%=new ArrayList<Company.Period>()%>" scope="page"/>
                                     <c:forEach var="period" items="${company.periods}">
                                         <div class="period_container">
                                             <label>Дата начала
@@ -80,11 +83,15 @@
                                                           cols="100">${period.description}</textarea>
                                             </label>
                                         </div>
+                                        ${periodList.add(period)}
                                     </c:forEach>
+
                                     <button class="add_button add_period_button" type="button">Добавить период
                                     </button>
                                 </dd>
                             </div>
+                            ${company.periods=periodList}
+                            ${companyList.add(company)}
                         </c:forEach>
                         <button class="add_button" id="add_organization" type="button">Добавить организацию</button>
                     </c:when>
