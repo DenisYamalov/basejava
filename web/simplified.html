@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>second test</title>
+</head>
+<body>
+
+<form method="post" action="resume" enctype="application/x-www-form-urlencoded" id="form">
+    <dl>
+        <div class="companyContainer" id="companyContainer_1">
+            <dd>
+                <label class="companyName">Наименование организации
+                    <input type="text" name="Education: companyName "
+                           value="${company.homepage.name}">
+                </label>
+                <label class="companyUrl">Ссылка
+                    <input type="text" name="Education: companyUrl"
+                           value="${company.homepage.url}">
+                </label>
+                <div class="periodContainer">
+                    <label>Дата начала
+                        <input type="date" name="Education: startDate"
+                               value="2018-07-22">
+                    </label>
+                    <label>Дата завершения
+                        <input type="date" name="Education: finishDate"
+                               value="2018-07-22">
+                    </label>
+                    <label>Описание
+                        <textarea name="Education: periodDescription" rows="3"
+                                  cols="100">${period.description}</textarea>
+                    </label>
+                </div>
+                <button class="add_button add_period_button" type="button">Добавить период
+                </button>
+            </dd>
+        </div>
+        <button class="add_button add_education_button" type="button">Добавить организацию</button>
+        <div class="companyContainer" id="companyContainer_2">
+            <dd>
+                <label class="companyName">Наименование организации
+                    <input type="text" name="Experience: companyName "
+                           value="${company.homepage.name}">
+                </label>
+                <label class="companyUrl">Ссылка
+                    <input type="text" name="Experience: companyUrl"
+                           value="${company.homepage.url}">
+                </label>
+                <div class="periodContainer">
+                    <label>Дата начала
+                        <input type="date" name="Experience: startDate"
+                               value="2018-07-22">
+                    </label>
+                    <label>Дата завершения
+                        <input type="date" name="Experience: finishDate"
+                               value="2018-07-22">
+                    </label>
+                    <label>Должность
+                        <input type="text" name="Experience: companyObjective"
+                               value="${period.title}">
+                    </label>
+                    <label>Описание
+                        <textarea name="Experience: periodDescription" rows="3"
+                                  cols="100">${period.description}</textarea>
+                    </label>
+                </div>
+                <div class="periodContainer">
+                    <label>Дата начала
+                        <input type="date" name="Experience: startDate"
+                               value="2018-07-23">
+                    </label>
+                    <label>Дата завершения
+                        <input type="date" name="Experience: finishDate"
+                               value="2018-07-23">
+                    </label>
+                    <label>Должность
+                        <input type="text" name="Experience: companyObjective"
+                               value="${period.title}2">
+                    </label>
+                    <label>Описание
+                        <textarea name="Experience: periodDescription" rows="3"
+                                  cols="100">${period.description}2</textarea>
+                    </label>
+                </div>
+                <button class="add_button add_period_button" type="button">Добавить период
+                </button>
+            </dd>
+        </div>
+        <button class="add_button add_education_button" type="button">Добавить организацию</button>
+    </dl>
+    <br>
+    <hr>
+    <button type="submit">Сохранить</button>
+    <button type="reset" onclick="window.history.back()">Отменить</button>
+</form>
+
+<script>
+    let clonePeriod = 1
+    $('.add_period_button').click(function () {
+        $('.period_container').clone()
+            // .attr('id', 'empty_period_' + ++clonePeriod)
+            .insertBefore(this);
+    });
+
+    const form = document.querySelector("#form");
+
+    async function sendData() {
+        // Associate the FormData object with the form element
+        let count = $('#test .username').length;
+        let secondCounter = $('#test_2 .username').length;
+
+        // Access elements with class names starting with 'result_' and ending with numbers
+        var companyElements = document.getElementById('result_');
+        console.log(companyElements)
+
+// Loop through the collection to access each element individually
+        for(var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+            console.log(element); // Or perform any operation on the element
+        }
+
+
+        const formData = new FormData(form);
+        formData.append("section", "company");
+        formData.append("count", companyElements);
+        formData.append("count2", secondCounter);
+
+
+        try {
+            const response = await fetch("http://localhost:8080/resumes/resume", {
+                method: "POST",
+                // Set the FormData instance as the request body
+                body: formData,
+            });
+            console.log(await response.json());
+            console.log(count)
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // Take over form submission
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        sendData();
+    });
+
+</script>
+</body>
+</html>
