@@ -2,21 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <title>SetUp</title>
 </head>
 <body>
 
 <form id="userinfo">
-    <div>
-        <label for="username">Enter your name:</label>
-        <input type="text" id="username" name="username" value="Dominic" />
+    <div id="test" class="count">
+        <label for="username_1">Enter your name:</label>
+        <input type="text" id="username_1" class="username" name="username" value="Dominic"/>
+        <label for="username_2">Enter your name:</label>
+        <input type="text" id="username_2" class="username" name="username" value="Dominic"/>
+        <label for="username_4">Enter your name:</label>
+        <input type="text" id="username_4" class="username" name="username" value="Dominic"/>
     </div>
 
-    <div>
+    <div id="test_2" class="count">
         <label for="song">Select an avatar</label>
-        <input type="text" id="song" name="song" value="Fallen leafs" />
+        <input type="text" id="song" name="song" value="Fallen leafs"/>
+        <label for="username_3">Enter your name:</label>
+        <input type="text" id="username_3" class="username" name="username" value="Dominic"/>
+        <input type="text" class="username" name="username" value="Dominic"/>
+        <input type="text" class="username" name="username" value="Dominic"/>
+        <input type="text" class="username" name="username" value="Dominic"/>
+        <input type="text" class="username" name="username" value="Dominic"/>
     </div>
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit"/>
 </form>
 
 <script>
@@ -27,16 +38,22 @@
 
     async function sendData() {
         // Associate the FormData object with the form element
+        let count = $('#test .username').length;
+        let secondCounter = $('#test_2 .username').length;
         const formData = new FormData(form);
-        formData.append("section", "company")
+        formData.append("section", "company");
+        formData.append("count", count);
+        formData.append("count2", secondCounter);
+
 
         try {
-            const response = await fetch("", {
+            const response = await fetch("https://example.org/post", {
                 method: "POST",
                 // Set the FormData instance as the request body
                 body: formData,
             });
             console.log(await response.json());
+            console.log(count)
         } catch (e) {
             console.error(e);
         }
