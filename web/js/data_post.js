@@ -1,33 +1,30 @@
-$(document).ready(function() {
-    // Attach click event handler to.add_period_button buttons
-    $(document).on('click', '.add_period_button', function(e) {
-        e.preventDefault(); // Prevent the default action of the button
+$(document).ready(function () {
+    $('.add_period_button').on('click', function () {
+        // Create a new companyContainer div
+        let newPeriodContainer = $(this).prevAll('.period_container:first').clone(true);
 
-        // Find the closest.companyContainer and the last.periodContainer within it
-        let $closestCompanyContainer = $(this).closest('.companyContainer');
-        let $lastPeriodContainer = $closestCompanyContainer.find('.periodContainer:last');
+        // Append the new companyContainer to the form
+        $('#form').append(newPeriodContainer);
 
-        // Clone the last.periodContainer
-        let $newPeriodContainer = $lastPeriodContainer.clone();
+        // Move the newly added companyContainer before the clicked button
+        $(this).before(newPeriodContainer);
 
-        // Append the cloned.periodContainer right after the last one
-        $lastPeriodContainer.after($newPeriodContainer);
-
-        // Optionally, clear the inputs in the new periodContainer
-        $newPeriodContainer.find('input, textarea').val('');
+        newPeriodContainer.find('input, textarea').val('');
     });
 });
 
-$(document).ready(function() {
-    $('.add_education_button').click(function() {
-        // Create a new clone of the existing companyContainer
-        let newCompanyContainer = $('#companyContainer_1').clone();
+$(document).ready(function () {
+    $('.add_education_button').click(function () {
+        // Create a new companyContainer div
+        let newCompanyContainer = $(this).prevAll('.companyContainer:first').clone(true);
 
-        // Remove the ID from the cloned container to avoid duplicate IDs
-        newCompanyContainer.attr('id', '');
+        // Append the new companyContainer to the form
+        $('#form').append(newCompanyContainer);
 
-        // Insert the cloned container before the current button
+        // Move the newly added companyContainer before the clicked button
         $(this).before(newCompanyContainer);
+
+        newCompanyContainer.find('input, textarea').val('');
     });
 });
 
@@ -35,8 +32,8 @@ const form = document.querySelector("#form");
 
 async function sendData() {
     // Select all company containers
-    const educationContainers = document.querySelectorAll('.Education.companyContainer');
-    const experienceContainers = document.querySelectorAll('.Experience.companyContainer');
+    const educationContainers = document.querySelectorAll('.EDUCATION.companyContainer');
+    const experienceContainers = document.querySelectorAll('.EXPERIENCE.companyContainer');
 
     // Initialize arrays to hold counts
     let educationPeriodCounts = [];

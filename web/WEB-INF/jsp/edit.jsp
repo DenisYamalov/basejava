@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="css/style.css">
     <jsp:useBean id="resume" type="ru.javawebinar.basejava.model.Resume" scope="request"/>
     <title>Резюме ${resume.fullName}</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/data_post.js"></script>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
 <section>
-    <form method="post" action="resume" enctype="application/x-www-form-urlencoded">
+    <form method="post" action="resume" enctype="application/x-www-form-urlencoded" id="form">
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <dl>
             <dt>Имя:</dt>
@@ -28,8 +29,7 @@
                 <dd><input type="text" name="${type.name()}" size=30 value="${resume.getContact(type)}"></dd>
             </dl>
         </c:forEach>
-<%--        <h3>Секции:</h3>--%>
-        <br>
+        <hr/>
         <c:forEach var="sectionType" items="<%=SectionType.values()%>">
             <jsp:useBean id="sectionType" type="ru.javawebinar.basejava.model.SectionType"/>
             <dl>
@@ -52,7 +52,7 @@
                         <c:forEach var="company"
                                    items="<%=resume.getSection(sectionType)==null ? HtmlUtil.getNewCompany()
                                    : ((CompanySection) resume.getSection(sectionType)).getCompanies()%>">
-                            <div class="companyContainer">
+                            <div class="${sectionType.name()} companyContainer">
                                 <dd>
                                     <label class="companyName">Наименование организации
                                         <input type="text" name="${sectionType.name()}: companyName "
@@ -62,7 +62,6 @@
                                         <input type="text" name="${sectionType.name()}: companyUrl"
                                                value="${company.homepage.url}">
                                     </label>
-<%--                                    TODO find way to distinct periods--%>
                                     <c:forEach var="period" items="${company.periods}">
                                         <div class="period_container">
                                             <label>Дата начала
@@ -89,23 +88,14 @@
                                     </button>
                                 </dd>
                             </div>
-<%--                            <input type="hidden" name="${sectionType.name()}" value="${companyList}">--%>
                         </c:forEach>
-                        <button class="add_button" id="add_organization" type="button">Добавить организацию</button>
+                        <button class="add_button add_education_button" id="add_organization" type="button">Добавить организацию</button>
                     </c:when>
                 </c:choose>
             </dl>
-            <br>
+            <hr/>
         </c:forEach>
-        <script>
-            let clonePeriod = 1
-            $('.add_period_button').click(function () {
-                $('.period_container').clone()
-                    // .attr('id', 'empty_period_' + ++clonePeriod)
-                    .insertBefore(this);
-            });
-        </script>
-        <hr>
+<%--        <hr/>--%>
         <button type="submit">Сохранить</button>
         <button type="reset" onclick="window.history.back()">Отменить</button>
     </form>

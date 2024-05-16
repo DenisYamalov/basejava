@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="js/data_post.js"></script>
     <title>second test</title>
 </head>
@@ -10,27 +10,27 @@
 
 <form method="post" action="resume" enctype="application/x-www-form-urlencoded" id="form">
     <dl>
-        <div class="Education companyContainer" id="companyContainer_1">
+        <div class="EDUCATION companyContainer">
             <dd>
                 <label class="companyName">Наименование организации
-                    <input type="text" name="Education: companyName "
+                    <input type="text" name="EDUCATION: companyName "
                            value="${company.homepage.name}">
                 </label>
                 <label class="companyUrl">Ссылка
-                    <input type="text" name="Education: companyUrl"
+                    <input type="text" name="EDUCATION: companyUrl"
                            value="${company.homepage.url}">
                 </label>
                 <div class="periodContainer">
                     <label>Дата начала
-                        <input type="date" name="Education: startDate"
+                        <input type="date" name="EDUCATION: startDate"
                                value="2018-07-22">
                     </label>
                     <label>Дата завершения
-                        <input type="date" name="Education: finishDate"
+                        <input type="date" name="EDUCATION: finishDate"
                                value="2018-07-22">
                     </label>
                     <label>Описание
-                        <textarea name="Education: periodDescription" rows="3"
+                        <textarea name="EDUCATION: periodDescription" rows="3"
                                   cols="100">${period.description}</textarea>
                     </label>
                 </div>
@@ -39,49 +39,49 @@
             </dd>
         </div>
         <button class="add_button add_education_button" type="button">Добавить организацию</button>
-        <div class="Experience companyContainer">
+        <div class="EXPERIENCE companyContainer">
             <dd>
                 <label class="companyName">Наименование организации
-                    <input type="text" name="Experience: companyName "
+                    <input type="text" name="EXPERIENCE: companyName "
                            value="${company.homepage.name}">
                 </label>
                 <label class="companyUrl">Ссылка
-                    <input type="text" name="Experience: companyUrl"
+                    <input type="text" name="EXPERIENCE: companyUrl"
                            value="${company.homepage.url}">
                 </label>
                 <div class="periodContainer">
                     <label>Дата начала
-                        <input type="date" name="Experience: startDate"
+                        <input type="date" name="EXPERIENCE: startDate"
                                value="2018-07-22">
                     </label>
                     <label>Дата завершения
-                        <input type="date" name="Experience: finishDate"
+                        <input type="date" name="EXPERIENCE: finishDate"
                                value="2018-07-22">
                     </label>
                     <label>Должность
-                        <input type="text" name="Experience: companyObjective"
+                        <input type="text" name="EXPERIENCE: companyObjective"
                                value="${period.title}">
                     </label>
                     <label>Описание
-                        <textarea name="Experience: periodDescription" rows="3"
+                        <textarea name="EXPERIENCE: periodDescription" rows="3"
                                   cols="100">${period.description}</textarea>
                     </label>
                 </div>
                 <div class="periodContainer">
                     <label>Дата начала
-                        <input type="date" name="Experience: startDate"
+                        <input type="date" name="EXPERIENCE: startDate"
                                value="2018-07-23">
                     </label>
                     <label>Дата завершения
-                        <input type="date" name="Experience: finishDate"
+                        <input type="date" name="EXPERIENCE: finishDate"
                                value="2018-07-23">
                     </label>
                     <label>Должность
-                        <input type="text" name="Experience: companyObjective"
+                        <input type="text" name="EXPERIENCE: companyObjective"
                                value="${period.title}2">
                     </label>
                     <label>Описание
-                        <textarea name="Experience: periodDescription" rows="3"
+                        <textarea name="EXPERIENCE: periodDescription" rows="3"
                                   cols="100">${period.description}2</textarea>
                     </label>
                 </div>
@@ -89,31 +89,31 @@
                 </button>
             </dd>
         </div>
-        <div class="Experience companyContainer">
+        <div class="EXPERIENCE companyContainer">
             <dd>
                 <label class="companyName">Наименование организации
-                    <input type="text" name="Experience: companyName "
+                    <input type="text" name="EXPERIENCE: companyName "
                            value="${company.homepage.name}">
                 </label>
                 <label class="companyUrl">Ссылка
-                    <input type="text" name="Experience: companyUrl"
+                    <input type="text" name="EXPERIENCE: companyUrl"
                            value="${company.homepage.url}">
                 </label>
                 <div class="periodContainer">
                     <label>Дата начала
-                        <input type="date" name="Experience: startDate"
+                        <input type="date" name="EXPERIENCE: startDate"
                                value="2018-07-22">
                     </label>
                     <label>Дата завершения
-                        <input type="date" name="Experience: finishDate"
+                        <input type="date" name="EXPERIENCE: finishDate"
                                value="2018-07-22">
                     </label>
                     <label>Должность
-                        <input type="text" name="Experience: companyObjective"
+                        <input type="text" name="EXPERIENCE: companyObjective"
                                value="${period.title}">
                     </label>
                     <label>Описание
-                        <textarea name="Experience: periodDescription" rows="3"
+                        <textarea name="EXPERIENCE: periodDescription" rows="3"
                                   cols="100">${period.description}</textarea>
                     </label>
                 </div>
