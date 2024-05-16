@@ -20,14 +20,14 @@ $(document).ready(function() {
 
 $(document).ready(function() {
     $('.add_education_button').click(function() {
-        // Clone the last.companyContainer element
-        var clonedCompanyContainer = $('.companyContainer:last').clone();
+        // Create a new clone of the existing companyContainer
+        let newCompanyContainer = $('#companyContainer_1').clone();
 
-        // Append the cloned container to the form
-        $('#form dl').append(clonedCompanyContainer);
+        // Remove the ID from the cloned container to avoid duplicate IDs
+        newCompanyContainer.attr('id', '');
 
-        // Reset the values of the cloned inputs to avoid duplication
-        clonedCompanyContainer.find('input, textarea').val('');
+        // Insert the cloned container before the current button
+        $(this).before(newCompanyContainer);
     });
 });
 
