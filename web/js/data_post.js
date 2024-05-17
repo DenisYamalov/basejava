@@ -27,55 +27,125 @@ $(document).ready(function () {
         newCompanyContainer.find('input, textarea').val('');
     });
 });
+//
+// const form = document.querySelector("#form");
+//
+// async function sendData() {
+//     // Select all company containers
+//     const educationContainers = document.querySelectorAll('.EDUCATION.companyContainer');
+//     const experienceContainers = document.querySelectorAll('.EXPERIENCE.companyContainer');
+//
+//     // Initialize arrays to hold counts
+//     let educationPeriodCounts = [];
+//     let experiencePeriodCounts = [];
+//
+//     // Function to count periods in a single container
+//     function countPeriods(container) {
+//         return container.querySelectorAll('.periodContainer').length;
+//     }
+//
+//     // Count periods in each education container
+//     educationContainers.forEach((container) => {
+//         const count = countPeriods(container);
+//         educationPeriodCounts.push(count);
+//     });
+//
+//     // Count periods in each experience container
+//     experienceContainers.forEach((container) => {
+//         const count = countPeriods(container);
+//         experiencePeriodCounts.push(count);
+//     });
+//
+//     // Associate the FormData object with the form element
+//     const formData = new FormData(form);
+//     formData.append("educationPeriodCounts", educationPeriodCounts);
+//     formData.append("experiencePeriodCounts", experiencePeriodCounts);
+//
+//     try {
+//         const response = await fetch("https://example.org/post", {
+//             method: "POST",
+//             // Set the FormData instance as the request body
+//             body: formData,
+//         });
+//         console.log(await response.json());
+//         console.log(educationCompanies.length)
+//     } catch (e) {
+//         console.error(e);
+//     }
+// }
+//
+// // Take over form submission
+// form.addEventListener("submit", (event) => {
+//     event.preventDefault();
+//     sendData();
+// });
 
-const form = document.querySelector("#form");
+$(document).ready(function() {
+    let form = $('#form');
+    // Function to submit the form with additional data
+    async function submitFormWithCounts() {
+        let formData = new FormData(form[0]); // Get form data
 
-async function sendData() {
-    // Select all company containers
-    const educationContainers = document.querySelectorAll('.EDUCATION.companyContainer');
-    const experienceContainers = document.querySelectorAll('.EXPERIENCE.companyContainer');
+        // // Iterate over each.companyContainer
+        // $('.companyContainer').each(function(index) {
+        //     var $this = $(this);
+        //     var periodCount = $this.find('.periodContainer').length; // Count periods
+        //     formData.append(`EDUCATION:${index}:periodCount`, periodCount); // Append period count to formData
+        //     // Repeat for EXPERIENCE containers similarly
+        // });
 
-    // Initialize arrays to hold counts
-    let educationPeriodCounts = [];
-    let experiencePeriodCounts = [];
+        // Select all company containers
+        const educationContainers = document.querySelectorAll('.EDUCATION.companyContainer');
+        const experienceContainers = document.querySelectorAll('.EXPERIENCE.companyContainer');
 
-    // Function to count periods in a single container
-    function countPeriods(container) {
-        return container.querySelectorAll('.periodContainer').length;
-    }
+        // Initialize arrays to hold counts
+        let educationPeriodCounts = [];
+        let experiencePeriodCounts = [];
 
-    // Count periods in each education container
-    educationContainers.forEach((container) => {
-        const count = countPeriods(container);
-        educationPeriodCounts.push(count);
-    });
+        // Function to count periods in a single container
+        function countPeriods(container) {
+            return container.querySelectorAll('.periodContainer').length;
+        }
 
-    // Count periods in each experience container
-    experienceContainers.forEach((container) => {
-        const count = countPeriods(container);
-        experiencePeriodCounts.push(count);
-    });
-
-    // Associate the FormData object with the form element
-    const formData = new FormData(form);
-    formData.append("educationPeriodCounts", educationPeriodCounts);
-    formData.append("experiencePeriodCounts", experiencePeriodCounts);
-
-    try {
-        const response = await fetch("https://example.org/post", {
-            method: "POST",
-            // Set the FormData instance as the request body
-            body: formData,
+        // Count periods in each education container
+        educationContainers.forEach((container) => {
+            const count = countPeriods(container);
+            educationPeriodCounts.push(count);
         });
-        console.log(await response.json());
-        console.log(educationCompanies.length)
-    } catch (e) {
-        console.error(e);
-    }
-}
 
-// Take over form submission
-form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    sendData();
+        // Count periods in each experience container
+        experienceContainers.forEach((container) => {
+            const count = countPeriods(container);
+            experiencePeriodCounts.push(count);
+        });
+
+        // Associate the FormData object with the form element
+        formData.append("educationPeriodCounts", educationPeriodCounts);
+        formData.append("experiencePeriodCounts", experiencePeriodCounts);
+
+        try {
+            const response = await fetch("https://example.org/post", {
+                method: "POST",
+                // Set the FormData instance as the request body
+                body: formData,
+            });
+            console.log(await response.json());
+            console.log(educationCompanies.length)
+        } catch (e) {
+            console.error(e);
+        }
+
+    }
+
+    // Attach event listener to the save button
+    $('button[type=submit]').click(function(e) {
+        e.preventDefault(); // Prevent default action
+        submitFormWithCounts();
+    });
+
+    // Optionally, attach event listener to reset button to prevent form submission
+    $('button[type=reset]').click(function(e) {
+        e.preventDefault(); // Prevent default action
+        window.history.back(); // Navigate back
+    });
 });
