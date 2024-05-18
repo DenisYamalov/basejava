@@ -6,10 +6,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/data_post.js"></script>
     <jsp:useBean id="resume" type="ru.javawebinar.basejava.model.Resume" scope="request"/>
     <title>Резюме ${resume.fullName}</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="js/data_post.js"></script>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
@@ -55,31 +55,31 @@
                             <div class="${sectionType.name()} companyContainer">
                                 <dd>
                                     <label class="companyName">Наименование организации
-                                        <input type="text" name="${sectionType.name()}: companyName "
+                                        <input type="text" name="${sectionType.name()}:companyName"
                                                value="${company.homepage.name}">
                                     </label>
                                     <label class="companyUrl">Ссылка
-                                        <input type="text" name="${sectionType.name()}: companyUrl"
+                                        <input type="text" name="${sectionType.name()}:companyUrl"
                                                value="${company.homepage.url}">
                                     </label>
                                     <c:forEach var="period" items="${company.periods}">
-                                        <div class="period_container">
+                                        <div class="periodContainer">
                                             <label>Дата начала
-                                                <input type="date" name="${sectionType.name()}: startDate"
+                                                <input type="date" name="${sectionType.name()}:startDate"
                                                        value="${period.startDate}">
                                             </label>
                                             <label>Дата завершения
-                                                <input type="date" name="${sectionType.name()}: finishDate"
+                                                <input type="date" name="${sectionType.name()}:finishDate"
                                                        value="${period.finishDate}">
                                             </label>
                                             <c:if test="${sectionType eq SectionType.EXPERIENCE}">
                                                 <label>Должность
-                                                    <input type="text" name="${sectionType.name()}: companyObjective"
+                                                    <input type="text" name="${sectionType.name()}:companyObjective"
                                                            value="${period.title}">
                                                 </label>
                                             </c:if>
                                             <label>Описание
-                                                <textarea name="${sectionType.name()}: periodDescription" rows="3"
+                                                <textarea name="${sectionType.name()}:periodDescription" rows="3"
                                                           cols="100">${period.description}</textarea>
                                             </label>
                                         </div>

@@ -3,7 +3,6 @@ package ru.javawebinar.basejava.web;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.Storage;
-import ru.javawebinar.basejava.util.HtmlUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -54,6 +53,7 @@ public class ResumeServlet extends HttpServlet {
             if (value != null && !value.trim().isEmpty()) {
                 value = value.trim();
                 Section section = null;
+                String[] periodsCounts = null;
                 switch (sectionType) {
                     case PERSONAL:
                     case OBJECTIVE:
@@ -66,11 +66,43 @@ public class ResumeServlet extends HttpServlet {
                                                           .filter(s -> !s.isEmpty())
                                                           .collect(Collectors.toList()));
                         break;
-                    case EXPERIENCE:
                     case EDUCATION:
-                        //TODO process request.getParameterValues
+                        periodsCounts = request.getParameterValues("educationPeriods");
+                    case EXPERIENCE:
+                        if (periodsCounts == null) {
+                            periodsCounts = request.getParameterValues("experiencePeriods");
+                        }
+                        String[] companyNames = request.getParameterValues(sectionType.name() + ":companyName");
+                        String[] companyUrls = request.getParameterValues(sectionType.name() + ":companyUrl");
+                        String[] companyStartDates = request.getParameterValues(sectionType.name() + ":startDate");
+                        String[] companyFinishDates = request.getParameterValues(sectionType.name() + ":finishDate");
+                        String[] companyObjectives = request.getParameterValues(sectionType.name() +
+                                                                                        ":companyObjective");
+                        String[] companyPeriodDescriptions = request.getParameterValues(sectionType.name() +
+                                                                                                ":periodDescription");
 
-                        section = new CompanySection();
+                        List<Company> companies = new ArrayList<>();
+
+                        int companiesCount = periodsCounts.length;
+                        for (int i = 0; i < companiesCount; i++) {
+                            int periodsCount = Integer.parseInt(periodsCounts[i]);
+                            List<Company.Period> periods = new ArrayList<>();
+                            for (int j = 0; j < periodsCount; j++) {
+                                int periodIndex = i + j * (companiesCount - 1);
+                                String companyObjective = null;
+                                if (companyObjectives != null) {
+                                    companyObjective = companyObjectives[periodIndex];
+                                }
+                                periods.add(new Company.Period(LocalDate.parse(companyStartDates[periodIndex]),
+                                                               LocalDate.parse(companyFinishDates[periodIndex]),
+                                                               companyPeriodDescriptions[periodIndex],
+                                                               companyObjective));
+                            }
+                            Company company = new Company(companyNames[i], companyUrls[i], periods);
+                            companies.add(company);
+                        }
+
+                        section = new CompanySection(companies);
                         break;
                 }
                 r.setSection(sectionType, section);
