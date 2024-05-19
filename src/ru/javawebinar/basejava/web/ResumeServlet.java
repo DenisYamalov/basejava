@@ -93,10 +93,26 @@ public class ResumeServlet extends HttpServlet {
                                 if (companyObjectives != null) {
                                     companyObjective = companyObjectives[periodIndex];
                                 }
-                                periods.add(new Company.Period(LocalDate.parse(companyStartDates[periodIndex]),
-                                                               LocalDate.parse(companyFinishDates[periodIndex]),
-                                                               companyPeriodDescriptions[periodIndex],
-                                                               companyObjective));
+                                String stratDateString = companyStartDates[periodIndex];
+                                LocalDate startDate = null;
+                                if (!(stratDateString.isEmpty() || stratDateString.isBlank())) {
+                                    startDate = LocalDate.parse(stratDateString);
+                                }
+
+                                LocalDate finishDate = null;
+                                String finishDateString = companyFinishDates[periodIndex];
+                                if (!(finishDateString.isBlank()||finishDateString.isEmpty())){
+                                    finishDate = LocalDate.parse(finishDateString);
+                                }
+
+                                String companyPeriodDescription = companyPeriodDescriptions[periodIndex];
+
+                                if (startDate!=null || finishDate!=null){
+                                    periods.add(new Company.Period(startDate,
+                                                                   finishDate,
+                                                                   companyPeriodDescription,
+                                                                   companyObjective));
+                                }
                             }
                             Company company = new Company(companyNames[i], companyUrls[i], periods);
                             companies.add(company);
