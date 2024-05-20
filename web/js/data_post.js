@@ -27,48 +27,82 @@ $(document).ready(function () {
         newCompanyContainer.find('input, textarea').val('');
     });
 });
-
 $(document).ready(function () {
     $('#form').submit(function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Arrays to hold period counts for each type
         let educationPeriods = [];
         let experiencePeriods = [];
 
-        $('.EDUCATION.companyContainer').each(function () {
-            let periodCount = $(this).find('.periodContainer').length;
-            educationPeriods.push(periodCount);
+        // Function to count non-empty periods in a companyContainer
+        function countNonEmptyPeriods(container) {
+            let count = 0;
+            container.find('.periodContainer').each(function () {
+                let isEmpty = $(this).find('input, textarea').filter(function () {
+                    return this.value.trim() === "";
+                }).length > 0;
+                if (!isEmpty) {
+                    count++;
+                }
+            });
+            return count;
+        }
+
+        // Iterate through each companyContainer
+        $('.companyContainer').each(function () {
+            let container = $(this);
+            let periodCount = countNonEmptyPeriods(container);
+
+            // Determine if it's EDUCATION or EXPERIENCE and add to appropriate array
+            if (container.hasClass('EDUCATION')) {
+                educationPeriods.push(periodCount);
+            } else if (container.hasClass('EXPERIENCE')) {
+                experiencePeriods.push(periodCount);
+            }
         });
 
-        $('.EXPERIENCE.companyContainer').each(function () {
-            let periodCount = $(this).find('.periodContainer').length;
-            experiencePeriods.push(periodCount);
+        educationPeriods.forEach((el, index, object) => {
+            if (el !== 0) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'educationPeriods',
+                    value: el
+                }).appendTo('#form');
+            } else {
+                object.splice(index, 1);
+            }
         });
 
-        educationPeriods.forEach(el => {
+        if (educationPeriods.length !== 0) {
             $('<input>').attr({
                 type: 'hidden',
-                name: 'educationPeriods',
-                value: el
+                name: 'EDUCATION',
+                value: educationPeriods.length
             }).appendTo('#form');
+        }
+
+
+        experiencePeriods.forEach((el, index, object) => {
+            if (el !== 0) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'experiencePeriods',
+                    value: el
+                }).appendTo('#form');
+            } else {
+                object.splice(index, 1);
+            }
         });
 
-        $('<input>').attr({
-            type: 'hidden',
-            name: 'EDUCATION',
-            value: educationPeriods.length
-        }).appendTo('#form');
-
-        experiencePeriods.forEach(el => {
+        if (experiencePeriods.length !== 0) {
             $('<input>').attr({
                 type: 'hidden',
-                name: 'experiencePeriods',
-                value: el
+                name: 'EXPERIENCE',
+                value: experiencePeriods.length
             }).appendTo('#form');
-        });
-
-        $('<input>').attr({
-            type: 'hidden',
-            name: 'EXPERIENCE',
-            value: experiencePeriods.length
-        }).appendTo('#form');
+        }
+        // Now, allow the form to be submitted
+        this.submit();
     });
 });

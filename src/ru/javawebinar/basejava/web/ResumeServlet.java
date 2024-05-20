@@ -83,12 +83,13 @@ public class ResumeServlet extends HttpServlet {
 
                         List<Company> companies = new ArrayList<>();
 
+                        int totalPeriodsCount = 0;
                         int companiesCount = periodsCounts.length;
                         for (int i = 0; i < companiesCount; i++) {
                             int periodsCount = Integer.parseInt(periodsCounts[i]);
                             List<Company.Period> periods = new ArrayList<>();
                             for (int j = 0; j < periodsCount; j++) {
-                                int periodIndex = i + j * (companiesCount - 1);
+                                int periodIndex = j + totalPeriodsCount;
                                 String companyObjective = null;
                                 if (companyObjectives != null) {
                                     companyObjective = companyObjectives[periodIndex];
@@ -101,21 +102,24 @@ public class ResumeServlet extends HttpServlet {
 
                                 LocalDate finishDate = null;
                                 String finishDateString = companyFinishDates[periodIndex];
-                                if (!(finishDateString.isBlank()||finishDateString.isEmpty())){
+                                if (!(finishDateString.isBlank() || finishDateString.isEmpty())) {
                                     finishDate = LocalDate.parse(finishDateString);
                                 }
 
                                 String companyPeriodDescription = companyPeriodDescriptions[periodIndex];
 
-                                if (startDate!=null || finishDate!=null){
+                                if (startDate != null || finishDate != null) {
                                     periods.add(new Company.Period(startDate,
                                                                    finishDate,
                                                                    companyPeriodDescription,
                                                                    companyObjective));
                                 }
                             }
-                            Company company = new Company(companyNames[i], companyUrls[i], periods);
-                            companies.add(company);
+                            totalPeriodsCount += periodsCount;
+                            if (!periods.isEmpty()) {
+                                Company company = new Company(companyNames[i], companyUrls[i], periods);
+                                companies.add(company);
+                            }
                         }
 
                         section = new CompanySection(companies);
