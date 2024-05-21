@@ -2,6 +2,7 @@ package ru.javawebinar.basejava.util;
 
 import ru.javawebinar.basejava.model.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class HtmlUtil {
@@ -51,15 +52,26 @@ public class HtmlUtil {
             case EDUCATION:
                 CompanySection companySection = (CompanySection) section;
                 List<Company> companies = companySection.getCompanies();
-                if (companies != null){
+                if (companies != null) {
                     companies.forEach(company -> {
                         stringBuilder.append("<li>");
-                        stringBuilder.append("<a " + "href=").append(company.getHomepage().getUrl()).append(">")
+                        String url = company.getHomepage().getUrl();
+                        stringBuilder.append("<a ");
+                        if (!url.isEmpty()) {
+                            stringBuilder.append("href=").append(url);
+                        }
+                        stringBuilder.append(">")
                                 .append(company.getHomepage().getName()).append("</a>");
                         List<Company.Period> periods = company.getPeriods();
                         periods.forEach(period -> {
-                            stringBuilder.append("<div>").append(period.getStartDate()).append(" - ")
-                                    .append(period.getFinishDate()).append("</div>");
+                            LocalDate finishDate = period.getFinishDate();
+                            stringBuilder.append("<div>").append(period.getStartDate()).append(" - ");
+                            if (finishDate.isAfter(LocalDate.now())) {
+                                stringBuilder.append("Сейчас");
+                            } else {
+                                stringBuilder.append(finishDate);
+                            }
+                            stringBuilder.append("</div>");
                             String title = period.getTitle();
                             if (title != null) {
                                 stringBuilder.append("<div>").append(title).append("</div>");
@@ -74,7 +86,8 @@ public class HtmlUtil {
         }
         return "";
     }
-    public static List<Company> getNewCompany (){
+
+    public static List<Company> getNewCompany() {
         Company company = new Company();
         company.setPeriods(List.of(new Company.Period()));
         return List.of(company);
