@@ -1,6 +1,7 @@
 <%@ page import="ru.javawebinar.basejava.model.*" %>
 <%@ page import="ru.javawebinar.basejava.util.HtmlUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="ru.javawebinar.basejava.util.DateUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
@@ -65,12 +66,12 @@
                                     <c:forEach var="period" items="${company.periods}">
                                         <div class="periodContainer">
                                             <label>Дата начала
-                                                <input type="date" name="${sectionType.name()}:startDate"
-                                                       value="${period.startDate}">
+                                                <input type="text" name="${sectionType.name()}:startDate"
+                                                       value="${DateUtil.format(period.startDate)}">
                                             </label>
                                             <label>Дата завершения
-                                                <input type="date" name="${sectionType.name()}:finishDate"
-                                                       value="${period.finishDate}">
+                                                <input type="text" name="${sectionType.name()}:finishDate"
+                                                       value="${DateUtil.format(period.finishDate)}">
                                             </label>
                                             <c:if test="${sectionType eq SectionType.EXPERIENCE}">
                                                 <label>Должность

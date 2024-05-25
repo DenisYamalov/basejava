@@ -65,13 +65,7 @@ public class HtmlUtil {
                         List<Company.Period> periods = company.getPeriods();
                         periods.forEach(period -> {
                             LocalDate finishDate = period.getFinishDate();
-                            stringBuilder.append("<div>").append(period.getStartDate()).append(" - ");
-                            if (finishDate.isAfter(LocalDate.now())) {
-                                stringBuilder.append("Сейчас");
-                            } else {
-                                stringBuilder.append(finishDate);
-                            }
-                            stringBuilder.append("</div>");
+                            stringBuilder.append("<div>").append(formatDates(period)).append("</div>");
                             String title = period.getTitle();
                             if (title != null) {
                                 stringBuilder.append("<div>").append(title).append("</div>");
@@ -91,5 +85,13 @@ public class HtmlUtil {
         Company company = new Company();
         company.setPeriods(List.of(new Company.Period()));
         return List.of(company);
+    }
+
+    public static boolean isEmpty(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+
+    public static String formatDates(Company.Period period) {
+        return DateUtil.format(period.getStartDate()) + " - " + DateUtil.format(period.getFinishDate());
     }
 }

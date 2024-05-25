@@ -3,6 +3,8 @@ package ru.javawebinar.basejava.web;
 import ru.javawebinar.basejava.Config;
 import ru.javawebinar.basejava.model.*;
 import ru.javawebinar.basejava.storage.Storage;
+import ru.javawebinar.basejava.util.DateUtil;
+import ru.javawebinar.basejava.util.HtmlUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -42,7 +44,7 @@ public class ResumeServlet extends HttpServlet {
         }
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            if (value != null && !value.trim().isEmpty()) {
+            if (!HtmlUtil.isEmpty(value)) {
                 r.setContact(type, value);
             } else {
                 r.getContacts().remove(type);
@@ -50,7 +52,7 @@ public class ResumeServlet extends HttpServlet {
         }
         for (SectionType sectionType : SectionType.values()) {
             String value = request.getParameter(sectionType.name());
-            if (value != null && !value.trim().isEmpty()) {
+            if (!HtmlUtil.isEmpty(value)) {
                 value = value.trim();
                 Section section = null;
                 String[] periodsCounts = null;
@@ -97,13 +99,13 @@ public class ResumeServlet extends HttpServlet {
                                 String stratDateString = companyStartDates[periodIndex];
                                 LocalDate startDate = null;
                                 if (!(stratDateString.isEmpty() || stratDateString.isBlank())) {
-                                    startDate = LocalDate.parse(stratDateString);
+                                    startDate = DateUtil.parse(stratDateString);
                                 }
 
                                 LocalDate finishDate = null;
                                 String finishDateString = companyFinishDates[periodIndex];
                                 if (!(finishDateString.isBlank() || finishDateString.isEmpty())) {
-                                    finishDate = LocalDate.parse(finishDateString);
+                                    finishDate = DateUtil.parse(finishDateString);
                                 }
 
                                 String companyPeriodDescription = companyPeriodDescriptions[periodIndex];

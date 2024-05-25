@@ -13,7 +13,7 @@ import java.util.UUID;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Serializable {
-    private static long serialVersionUID = -8104866515450132313L;
+    private static final long serialVersionUID = -8104866515450132313L;
     // Unique identifier
     @XmlAttribute(name = "uuid")
     private String uuid;
