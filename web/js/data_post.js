@@ -106,3 +106,8 @@ $(document).ready(function () {
         this.submit();
     });
 });
+$(document).ready(function (){
+    $(".delete_button").on("click", function (){
+        $(this.)
+    })
+});
