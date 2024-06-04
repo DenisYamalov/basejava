@@ -87,6 +87,7 @@
                                     </c:forEach>
                                     <button class="add_button add_period_button" type="button">Добавить период
                                     </button>
+                                    <button class="delete_button" type="button">Удалить период</button>
                                 </dd>
                             </div>
                         </c:forEach>

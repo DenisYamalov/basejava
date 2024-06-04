@@ -107,7 +107,10 @@ $(document).ready(function () {
     });
 });
 $(document).ready(function (){
-    $(".delete_button").on("click", function (){
-        $(this.)
+    $(".delete_button").click ( function (){
+        $(this).prevAll('.periodContainer:first').remove()
+    })
+    $(".delete_organization").click(function (){
+        $(this).prevAll('.companyContainer:first').remove()
     })
 });
